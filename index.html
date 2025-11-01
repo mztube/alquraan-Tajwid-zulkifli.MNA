@@ -3,96 +3,190 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Al-Qur'an Tajwid & Terjemahan - Zulkifli.MNA</title>
+  <title>Al-Qur'an Bertajwid & Terjemahan Melayu</title>
   <style>
     body {
-      font-family: "Arial", sans-serif;
-      background-color: #f4f6f8;
+      font-family: 'Noto Naskh Arabic', serif;
+      background-color: #f6f6f6;
+      margin: 0;
+      padding: 0;
       color: #222;
+    }
+    header {
+      background: #004d40;
+      color: white;
+      padding: 15px;
       text-align: center;
-      padding: 20px;
     }
     h1 {
-      color: #0d6efd;
+      font-size: 22px;
+      margin: 0;
+    }
+    #surahSelect {
+      width: 92%;
+      padding: 10px;
+      margin: 15px auto;
+      display: block;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+    #quran {
+      padding: 10px;
     }
     .ayah {
-      font-size: 28px;
-      line-height: 1.8;
-      direction: rtl;
-      text-align: right;
-      margin-top: 20px;
+      background: #fff;
+      margin: 10px 0;
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
-    .terjemahan {
+    .arabic {
+      direction: rtl;
+      font-size: 26px;
+      line-height: 1.8;
+      text-align: right;
+      margin-bottom: 10px;
+    }
+    .translation {
       font-size: 18px;
-      margin-top: 10px;
       color: #333;
       text-align: left;
     }
-    .merah { color: #d63031; }     /* Idgham Bighunnah */
-    .hijau { color: #00b894; }     /* Idgham Bila Ghunah */
-    .biru { color: #0984e3; }      /* Ikhfa' */
-    .kuning { color: #fdcb6e; }    /* Qalqalah */
+
+    /* 🌈 Warna Tajwid */
+    tajweed.madd { color: #008000; }         /* Mad - Panjangkan bacaan */
+    tajweed.idgham { color: #ff6600; }       /* Idgham - Lebur huruf */
+    tajweed.ikhfa { color: #cc00ff; }        /* Ikhfa’ - Sembunyikan bunyi */
+    tajweed.qalqalah { color: #0000cc; }     /* Qalqalah - Pantulan */
+    tajweed.ghunnah { color: #ff0000; }      /* Ghunnah - Dengung */
+    tajweed.ikhfa_shafawi { color: #990099; }/* Ikhfa’ Syafawi - Sembunyi bibir */
+    tajweed.iqlab { color: #ff9900; }        /* Iqlab - Tukar bunyi */
+    tajweed.idhar { color: #0099cc; }        /* Idhar - Bacaan jelas */
+
+    #loading {
+      text-align: center;
+      color: #666;
+      margin-top: 20px;
+    }
+
     footer {
-      margin-top: 50px;
+      background: #e0f2f1;
+      padding: 20px;
       font-size: 14px;
-      color: #777;
+      color: #333;
+    }
+    footer h3 {
+      margin-top: 0;
+      color: #004d40;
+      text-align: center;
+    }
+    footer table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      margin-top: 10px;
+    }
+    footer th, footer td {
+      padding: 6px;
+      border-bottom: 1px solid #ccc;
     }
   </style>
 </head>
 <body>
-  <h1>📖 Surah Al-Fatihah (الفاتحة)</h1>
+  <header>
+    <h1>📖 Al-Qur'an Bertajwid & Terjemahan Melayu</h1>
+  </header>
 
-  <div class="ayah">
-    بِسْمِ <span class="biru">ٱللَّهِ</span> ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ
-  </div>
-  <div class="terjemahan">
-    Dengan nama Allah Yang Maha Pemurah lagi Maha Penyayang.
-  </div>
+  <select id="surahSelect"></select>
 
-  <div class="ayah">
-    ٱلْحَمْدُ لِلَّهِ <span class="kuning">رَبِّ</span> ٱلْعَـٰلَمِينَ
-  </div>
-  <div class="terjemahan">
-    Segala puji bagi Allah, Tuhan sekalian alam.
-  </div>
-
-  <div class="ayah">
-    ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ
-  </div>
-  <div class="terjemahan">
-    Yang Maha Pemurah lagi Maha Penyayang.
-  </div>
-
-  <div class="ayah">
-    مَـٰلِكِ يَوْمِ ٱلدِّينِ
-  </div>
-  <div class="terjemahan">
-    Yang Menguasai hari pembalasan.
-  </div>
-
-  <div class="ayah">
-    إِيَّاكَ <span class="merah">نَعْبُدُ</span> وَإِيَّاكَ <span class="hijau">نَسْتَعِينُ</span>
-  </div>
-  <div class="terjemahan">
-    Hanya kepada Engkau kami menyembah dan hanya kepada Engkau kami mohon pertolongan.
-  </div>
-
-  <div class="ayah">
-    ٱهْدِنَا ٱلصِّرَٰطَ ٱلْمُسْتَقِيمَ
-  </div>
-  <div class="terjemahan">
-    Tunjukilah kami jalan yang lurus,
-  </div>
-
-  <div class="ayah">
-    صِرَٰطَ ٱلَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ ٱلْمَغْضُوبِ عَلَيْهِمْ وَلَا ٱلضَّآلِّينَ
-  </div>
-  <div class="terjemahan">
-    (iaitu) jalan orang yang Engkau telah kurniakan nikmat, bukan jalan mereka yang Engkau murkai dan bukan jalan mereka yang sesat.
-  </div>
+  <div id="loading">Memuatkan ayat...</div>
+  <div id="quran"></div>
 
   <footer>
-    © 2025 Al-Qur'an Tajwid by Zulkifli.MNA
+    <h3>🎨 Panduan Warna Hukum Tajwid</h3>
+    <table>
+      <tr><th>Warna</th><th>Hukum Tajwid</th><th>Keterangan</th></tr>
+      <tr><td style="color:#008000;">Hijau</td><td>Mad</td><td>Panjangkan bacaan 2–6 harakat</td></tr>
+      <tr><td style="color:#ff6600;">Oren</td><td>Idgham</td><td>Lebur bunyi huruf bertemu huruf tertentu</td></tr>
+      <tr><td style="color:#cc00ff;">Ungu</td><td>Ikhfa’</td><td>Sembunyi bacaan dengan dengung halus</td></tr>
+      <tr><td style="color:#0000cc;">Biru</td><td>Qalqalah</td><td>Pantulan bunyi huruf qalqalah</td></tr>
+      <tr><td style="color:#ff0000;">Merah</td><td>Ghunnah</td><td>Dengung kuat 2 harakat</td></tr>
+      <tr><td style="color:#990099;">Ungu Gelap</td><td>Ikhfa’ Syafawi</td><td>Sembunyi bibir, م bertemu ب</td></tr>
+      <tr><td style="color:#ff9900;">Kuning</td><td>Iqlab</td><td>Huruf ن jadi bunyi م bila bertemu ب</td></tr>
+      <tr><td style="color:#0099cc;">Biru Muda</td><td>Idhar</td><td>Bacaan jelas tanpa dengung</td></tr>
+    </table>
+
+    <p style="text-align:center; margin-top:15px;">
+      Data Arab & Tajwid oleh <b>ALIF API</b> | Terjemahan Melayu oleh <b>Surah.My</b><br>
+      Bebas digunakan untuk dakwah dan pembelajaran.
+    </p>
   </footer>
+
+  <script>
+    const quranDiv = document.getElementById("quran");
+    const loading = document.getElementById("loading");
+    const surahSelect = document.getElementById("surahSelect");
+
+    // Senarai Surah 1–114
+    const surahList = [
+      "Al-Fatihah","Al-Baqarah","Ali 'Imran","An-Nisa'","Al-Ma'idah","Al-An'am","Al-A'raf",
+      "Al-Anfal","At-Taubah","Yunus","Hud","Yusuf","Ar-Ra'd","Ibrahim","Al-Hijr","An-Nahl",
+      "Al-Isra'","Al-Kahfi","Maryam","Taha","Al-Anbiya'","Al-Hajj","Al-Mu'minun","An-Nur",
+      "Al-Furqan","Asy-Syu'ara'","An-Naml","Al-Qasas","Al-Ankabut","Ar-Rum","Luqman","As-Sajdah",
+      "Al-Ahzab","Saba'","Fatir","Ya-Sin","As-Saffat","Sad","Az-Zumar","Ghafir","Fussilat",
+      "Asy-Syura","Az-Zukhruf","Ad-Dukhan","Al-Jathiyah","Al-Ahqaf","Muhammad","Al-Fath","Al-Hujurat",
+      "Qaf","Adz-Dzariyat","At-Tur","An-Najm","Al-Qamar","Ar-Rahman","Al-Waqi'ah","Al-Hadid","Al-Mujadilah",
+      "Al-Hasyr","Al-Mumtahanah","As-Saff","Al-Jumu'ah","Al-Munafiqun","At-Taghabun","At-Talaq","At-Tahrim",
+      "Al-Mulk","Al-Qalam","Al-Haqqah","Al-Ma'arij","Nuh","Al-Jinn","Al-Muzzammil","Al-Muddathir","Al-Qiyamah",
+      "Al-Insan","Al-Mursalat","An-Naba'","An-Nazi'at","Abasa","At-Takwir","Al-Infitar","Al-Mutaffifin",
+      "Al-Insyiqaq","Al-Buruj","At-Tariq","Al-A'la","Al-Ghasyiyah","Al-Fajr","Al-Balad","Asy-Syams",
+      "Al-Lail","Ad-Duha","Asy-Syarh","At-Tin","Al-‘Alaq","Al-Qadr","Al-Bayyinah","Az-Zalzalah",
+      "Al-‘Adiyat","Al-Qari‘ah","At-Takathur","Al-‘Asr","Al-Humazah","Al-Fil","Quraisy","Al-Ma’un",
+      "Al-Kawthar","Al-Kafirun","An-Nasr","Al-Lahab","Al-Ikhlas","Al-Falaq","An-Nas"
+    ];
+
+    // Isi dropdown automatik
+    surahList.forEach((name, i) => {
+      const opt = document.createElement("option");
+      opt.value = i + 1;
+      opt.textContent = `${i + 1}. ${name}`;
+      surahSelect.appendChild(opt);
+    });
+
+    async function loadSurah(surahNumber) {
+      quranDiv.innerHTML = "";
+      loading.style.display = "block";
+      loading.textContent = "Memuatkan Surah...";
+
+      try {
+        const tajwidRes = await fetch(`https://api.alif.my.id/alquran/${surahNumber}/tajwid`);
+        const tajwidData = await tajwidRes.json();
+        const transRes = await fetch(`https://api.surah.my/surah/${surahNumber}`);
+        const transData = await transRes.json();
+
+        quranDiv.innerHTML = "";
+        tajwidData.data.ayahs.forEach((ayah, index) => {
+          const ayahDiv = document.createElement("div");
+          ayahDiv.classList.add("ayah");
+          ayahDiv.innerHTML = `
+            <div class="arabic">${ayah.text}</div>
+            <div class="translation">${transData.translation[index]?.text || ""}</div>
+          `;
+          quranDiv.appendChild(ayahDiv);
+        });
+
+        loading.style.display = "none";
+      } catch (error) {
+        console.error(error);
+        loading.textContent = "⚠️ Gagal memuat data. Semak sambungan internet.";
+      }
+    }
+
+    surahSelect.addEventListener("change", e => loadSurah(e.target.value));
+
+    // Muat Surah pertama semasa mula
+    loadSurah(1);
+  </script>
 </body>
 </html>
