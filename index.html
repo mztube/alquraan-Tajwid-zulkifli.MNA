@@ -1,189 +1,223 @@
 <!doctype html>
 <html lang="ms">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Al-Qur'an Bertajwid & Terjemahan Melayu — by Zulkifli.MNA</title>
-<meta name="description" content="Laman Al-Qur'an interaktif: tajwid berwarna & terjemahan Melayu. By Zulkifli.MNA" />
-<style>
-  :root{
-    --bg:#eaf6ef;   /* daun muda lembut */
-    --primary:#055e46;
-    --card:#ffffff;
-    --muted:#556;
-  }
-  html,body{height:100%;margin:0;font-family:Arial,system-ui,Segoe UI,Helvetica,sans-serif;background:var(--bg);color:#222}
-  header{background:var(--primary);color:#fff;padding:18px 14px;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,0.08)}
-  header h1{margin:0;font-size:20px}
-  .byline{font-size:12px;opacity:0.9;margin-top:6px}
-  .container{max-width:920px;margin:18px auto;padding:12px}
-  .card{background:var(--card);border-radius:10px;padding:14px;margin-bottom:14px;box-shadow:0 1px 3px rgba(0,0,0,0.06)}
-  .lead{font-size:15px;color:var(--muted);line-height:1.5}
-  .controls{display:flex;gap:8px;align-items:center;margin:14px 0}
-  select{padding:10px;border-radius:8px;border:1px solid #cfd8d4;font-size:15px}
-  #quran{padding:10px}
-  .ayah{padding:14px;border-radius:8px;background:#f8fff9;margin-bottom:12px}
-  .arabic{direction:rtl;font-size:30px;line-height:1.9;text-align:right;font-family:"Scheherazade New","Arial";}
-  .translation{font-size:17px;color:#2b2b2b;margin-top:10px;text-align:left}
-  footer{padding:12px;text-align:center;color:#234;opacity:0.9;font-size:14px}
-  /* tajwid colours */
-  .madd{color:#008000;font-weight:600}         /* hijau */
-  .idgham{color:#ff6600;font-weight:600}       /* oren */
-  .ikhfa{color:#cc00ff;font-weight:600}        /* ungu */
-  .qalqalah{color:#0000cc;font-weight:700}     /* biru */
-  .ghunnah{color:#ff0000;font-weight:700}     /* merah */
-  .ikhfa_shafawi{color:#990099;font-weight:700}/* ungu gelap */
-  .iqlab{color:#ff9900;font-weight:700}        /* kuning/oren */
-  .idhar{color:#0099cc;font-weight:600}        /* biru muda */
-  .legend{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px;font-size:14px}
-  .legend div{padding:8px;background:#f1fff7;border-radius:8px;border:1px solid #e6f0eb;text-align:center}
-  .small{font-size:13px;color:#445}
-  .note{background:#fff8e1;padding:10px;border-radius:8px;border:1px solid #f2e0b5}
-  .hadis{font-style:italic;color:#023f34}
-  .dua{background:#f7fefe;padding:10px;border-radius:8px;border:1px solid #dfeff0}
-  .credit{font-size:13px;color:#333;margin-top:8px}
-  @media(max-width:540px){
-    .arabic{font-size:26px}
-    .legend{grid-template-columns:repeat(2,1fr)}
-  }
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Al-Qur'an Bertajwid & Terjemahan Melayu — by Zulkifli.MNA</title>
+  <meta name="description" content="Laman Al-Qur'an bertajwid berwarna dan terjemahan Melayu. Baca, dengar dan pelajari tajwid dengan panduan warna dan keterangan ringkas." />
+  <style>
+    :root{
+      --bg:#eaf6ef; /* daun muda lembut */
+      --primary:#055e46;
+      --card:#ffffff;
+      --muted:#6b6b6b;
+      --accent:#004d40;
+      --maxw:980px;
+    }
+    html,body{height:100%;margin:0;font-family:Arial, "Noto Naskh Arabic", serif;background:var(--bg);color:#222}
+    .wrap{max-width:var(--maxw);margin:0 auto;padding:18px}
+    header{background:var(--primary);color:#fff;padding:18px;border-radius:8px 8px 0 0;text-align:center}
+    header h1{margin:0;font-size:22px}
+    header p{margin:6px 0 0 0;font-size:14px;opacity:.95}
+    .byline{font-size:13px;margin-top:6px;opacity:.9}
+    .card{background:var(--card);padding:14px;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,.06);margin-top:14px}
+    select#surah{width:100%;padding:10px;border-radius:8px;border:1px solid #cfcfcf;font-size:16px}
+    #loading{color:var(--muted);padding:12px;text-align:center}
+    .ayah{background:#fff;margin:10px 0;padding:12px;border-radius:8px;border:1px solid #e6efe9}
+    .arabic{direction:rtl;font-size:28px;line-height:2;text-align:right}
+    .translation{font-size:17px;color:#333;margin-top:8px}
+    .controls{display:flex;gap:8px;align-items:center;margin-top:10px;flex-wrap:wrap}
+    button.play{background:var(--accent);color:#fff;border:0;padding:8px 12px;border-radius:6px;cursor:pointer}
+    .tajwid-guide table{width:100%;border-collapse:collapse;margin-top:12px}
+    .tajwid-guide th,.tajwid-guide td{padding:8px;border-bottom:1px solid #e6efe9;text-align:left}
+    .tajwid-guide td.color{width:120px;font-weight:600}
+    footer{margin-top:18px;padding:12px;background:#e2f3ea;border-radius:8px;color:#083a2f}
+    .intro p{margin:8px 0}
+    .badge{display:inline-block;padding:4px 8px;background:#fff;border-radius:16px;margin-left:8px;font-size:12px;color:var(--primary)}
+    /* tajwid classes - warna */
+    .tj-madd{color:#008000;font-weight:600}
+    .tj-idgham{color:#ff6600;font-weight:600}
+    .tj-ikhfa{color:#cc00ff;font-weight:600}
+    .tj-qalqalah{color:#0000cc;font-weight:600}
+    .tj-ghunnah{color:#ff0000;font-weight:600}
+    .tj-ikhfa-shafawi{color:#990099;font-weight:600}
+    .tj-iqlab{color:#ff9900;font-weight:600}
+    .tj-idhar{color:#0099cc;font-weight:600}
+    .note{font-size:13px;color:var(--muted)}
+    .hadith{background:#fff8e6;padding:10px;border-radius:6px;border:1px solid #f1e0b8;margin-top:10px}
+    .dua{background:#f0fff8;padding:10px;border-radius:6px;border:1px solid #d6f2e0;margin-top:10px}
+    .by{font-size:12px;color:#666;margin-top:6px}
+  </style>
 </head>
 <body>
-<header>
-  <h1>📖 Al-Qur'an — Tajwid Berwarna & Terjemahan Melayu</h1>
-  <div class="byline">by <strong>Zulkifli.MNA</strong> — Laman ringkas offline (boleh diterbitkan GitHub Pages)</div>
-</header>
+  <div class="wrap">
+    <header>
+      <h1>📖 Al-Qur'an Bertajwid & Terjemahan Melayu</h1>
+      <div class="byline">Interaktif • Tajwid berwarna • Audio (jika tersedia) <span class="badge">by Zulkifli.MNA</span></div>
+    </header>
 
-<div class="container">
+    <div class="card intro">
+      <h3>Pengenalan singkat</h3>
+      <p>Selamat datang ke laman pembelajaran Al-Qur'an ini. Laman ini direka untuk membantu bacaan Anda dengan panduan warna tajwid, terjemahan Bahasa Melayu, serta audio bacaan apabila tersedia.</p>
 
-  <div class="card">
-    <h2 style="margin:0 0 8px 0">Pengenalan</h2>
-    <p class="lead">
-      Selamat datang. Laman ini dibina untuk membantu bacaan Al-Qur'an dengan penanda warna tajwid dan terjemahan Bahasa Melayu.
-      Baca perlahan-lahan, fahami maksud dan amalkan. Semoga usaha membaca dan belajar Al-Qur'an menjadi manfaat.
-    </p>
-    <div style="margin-top:8px" class="note">
-      <strong>Hadis terpilih:</strong>
-      <p class="hadis">“خَيْرُكُمْ مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ” — (HR. Al-Bukhari)</p>
-      <p class="hadis">“اقْرَءُوا الْقُرْآنَ فَإِنَّهُ يَأْتِي يَوْمَ الْقِيَامَةِ شَفِيعًا لِأَصْحَابِهِ” — (HR. Muslim)</p>
-      <div class="small">Nota: Hadis di atas ialah rujukan ringkas untuk memberi galakan. Sentiasa rujuk guru tajwid untuk pembetulan bacaan.</div>
-    </div>
-  </div>
-
-  <div class="card">
-    <h3 style="margin:0 0 8px">Doa sebelum membaca / belajar Al-Qur'an</h3>
-    <div class="dua">
-      <p class="small">Beberapa doa/ayat yang sesuai dibaca:</p>
-      <ol>
-        <li><strong>رَبِّ زِدْنِي عِلْماً</strong> — (Surah Taha 20:114) — "Ya Tuhanku, tambahkanlah aku ilmu." </li>
-        <li><strong>اللَّهُمَّ افْتَحْ لِي حِكْمَتَكَ</strong> — doa ringkas memohon kefahaman (niat dan ucapan hati).</li>
-        <li>“اللهم علمنا ما ينفعنا وانفعنا بما علمتنا وزدنا علماً” — doa umum memohon ilmu yang bermanfaat.</li>
-      </ol>
-      <div class="small">Bacalah dengan khusyuk dan niat ikhlas kerana Allah.</div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="controls">
-      <label for="surah">Pilih Surah:</label>
-      <select id="surah">
-        <option value="1">1. Al-Fatihah</option>
-        <!-- nanti boleh tambah lagi surah -->
-      </select>
-    </div>
-
-    <div id="quran">
-      <!-- START: Surah Al-Fatihah (hard-coded) -->
-      <div class="ayah">
-        <div class="arabic" id="arabic">
-          <!-- Teks Uthmani Al-Fatihah dengan beberapa penanda tajwid contoh -->
-          <div>
-            <span>بِسْمِ</span> <span>ٱللَّهِ</span> <span>ٱلرَّحْمَـٰنِ</span> <span>ٱلرَّحِيمِ</span>
-          </div>
-          <div>
-            <span>الْحَمْدُ</span> <span>لِلَّهِ</span> <span>رَبِّ</span> <span>ٱلْعَـٰلَمِينَ</span>
-          </div>
-          <div>
-            <span>ٱلرَّحْمَـٰنِ</span> <span class="madd">ٱلرَّحِيمِ</span>
-          </div>
-          <div>
-            <span>مَـٰلِكِ</span> <span>يَوْمِ</span> <span>ٱلدِّينِ</span>
-          </div>
-          <div>
-            <span>إِيَّاكَ</span> <span>نَعْبُدُ</span> <span>وَإِيَّاكَ</span> <span>نَسْتَعِينُ</span>
-          </div>
-          <div>
-            <span>ٱهْدِنَا</span> <span class="idgham">ٱلصِّرَٰطَ</span> <span>ٱلْمُسْتَقِيمَ</span>
-          </div>
-          <div>
-            <span>صِرَٰطَ</span> <span>ٱلَّذِينَ</span> <span>أَنْعَمْتَ</span> <span>عَلَيْهِمْ</span>
-          </div>
-          <div>
-            <span>غَيْرِ</span> <span>ٱلْمَغْضُوبِ</span> <span>عَلَيْهِمْ</span> <span>وَلَا</span> <span>ٱلضَّآلِّينَ</span>
-          </div>
-        </div>
-
-        <div class="translation" id="translation">
-          <strong>Terjemahan (Melayu):</strong>
-          <p>
-            Dengan nama Allah Yang Maha Pemurah lagi Maha Penyayang.<br>
-            Segala puji bagi Allah, Tuhan seluruh alam.<br>
-            Yang Maha Pemurah, lagi Maha Penyayang.<br>
-            Pemilik hari pembalasan.<br>
-            (Ya Allah), Engkaulah yang kami sembah dan kepada Engkaulah kami mohon pertolongan.<br>
-            Tunjukilah kami jalan yang lurus,<br>
-            (iaitu) jalan orang-orang yang Engkau beri nikmat kepadanya; bukan jalan orang-orang yang Engkau murkai dan bukan jalan orang-orang yang sesat.
-          </p>
-        </div>
-
-        <div class="credit small">
-          <em>Nota:</em> Warna-warna tajwid di atas adalah contoh penanda untuk pembelajaran. Rujuk guru tajwid untuk penanda terperinci huruf demi huruf.
-        </div>
-      </div>
-      <!-- END: Surah Al-Fatihah -->
-
-      <div class="card small">
-        <h4 style="margin:6px 0">Panduan Warna Tajwid</h4>
-        <div class="legend">
-          <div><span class="madd">Hijau</span><div class="small">Mad (panjangkan)</div></div>
-          <div><span class="idgham">Oren</span><div class="small">Idgham</div></div>
-          <div><span class="ikhfa">Ungu</span><div class="small">Ikhfa'</div></div>
-          <div><span class="qalqalah">Biru</span><div class="small">Qalqalah</div></div>
-          <div><span class="ghunnah">Merah</span><div class="small">Ghunnah</div></div>
-          <div><span class="ikhfa_shafawi">Ungu Gelap</span><div class="small">Ikhfa' Syafawi</div></div>
-          <div><span class="iqlab">Kuning</span><div class="small">Iqlab</div></div>
-          <div><span class="idhar">Biru Muda</span><div class="small">Idhar</div></div>
-        </div>
+      <div class="hadith">
+        <strong>Hadis ringkas (petikan sahih):</strong>
+        <p>“خَيْرُكُمْ مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ” — <em>“Sebaik-baik kamu ialah orang yang belajar Al-Qur’an dan mengajarkannya.”</em> (HR. Al-Bukhari)</p>
       </div>
 
+      <div class="dua">
+        <strong>Doa sebelum belajar:</strong>
+        <p><em>اللهم علمنا ما ينفعنا وانفعنا بما علمتنا وزدنا علما</em></p>
+        <p class="by">Terjemah: "Ya Allah, ajarkanlah kami apa yang memberi manfaat, berilah manfaat kepada kami dari apa yang Engkau ajarkan, dan tambahkanlah ilmu kepada kami."</p>
+      </div>
     </div>
+
+    <div class="card">
+      <label for="surah"><strong>Pilih Surah</strong></label>
+      <select id="surah"></select>
+      <div id="loading">Memuatkan senarai surah...</div>
+      <div id="controls" class="controls" style="display:none">
+        <button id="playSurah" class="play">▶️ Mainkan audio surah</button>
+        <div class="note">Jika audio tidak muncul bermakna sumber audio tidak tersedia untuk surah ini.</div>
+      </div>
+      <div id="quran"></div>
+    </div>
+
+    <div class="card tajwid-guide">
+      <h3>🎨 Panduan Warna Hukum Tajwid</h3>
+      <table>
+        <tr><th>Warna</th><th>Hukum</th><th>Keterangan</th></tr>
+        <tr><td class="color"><span class="tj-madd">Hijau</span></td><td>Mad</td><td>Panjangkan bacaan 2–6 harakat</td></tr>
+        <tr><td class="color"><span class="tj-idgham">Oren</span></td><td>Idgham</td><td>Lebur bunyi huruf bila bertemu huruf tertentu</td></tr>
+        <tr><td class="color"><span class="tj-ikhfa">Ungu</span></td><td>Ikhfa'</td><td>Sembunyi bacaan dengan dengung halus</td></tr>
+        <tr><td class="color"><span class="tj-qalqalah">Biru</span></td><td>Qalqalah</td><td>Pantulan bunyi huruf qalqalah</td></tr>
+        <tr><td class="color"><span class="tj-ghunnah">Merah</span></td><td>Ghunnah</td><td>Dengung kuat (contoh: 2 harakat)</td></tr>
+        <tr><td class="color"><span class="tj-ikhfa-shafawi">Ungu Gelap</span></td><td>Ikhfa' Syafawi</td><td>م bertemu ب — dengung khas</td></tr>
+        <tr><td class="color"><span class="tj-iqlab">Kuning</span></td><td>Iqlab</td><td>تukar bunyi ن ke م (contoh: sebelum ب)</td></tr>
+        <tr><td class="color"><span class="tj-idhar">Biru Muda</span></td><td>Idhar</td><td>Bacaan jelas tanpa dengung</td></tr>
+      </table>
+    </div>
+
+    <footer>
+      <div>Data Arab & Tajwid diperoleh daripada API awam; terjemahan Melayu oleh sumber awam. Gunakan laman ini untuk tujuan pembelajaran dan dakwah.</div>
+    </footer>
   </div>
 
-  <div class="card">
-    <h3 style="margin:0 0 8px">Bagaimana nak guna laman ini</h3>
-    <ul class="small">
-      <li>Pilih surah (buat masa ini Surah Al-Fatihah disediakan).</li>
-      <li>Baca ayat perlahan-lahan, ulang beberapa kali untuk hafalan dan fahaman.</li>
-      <li>Rujuk guru tajwid untuk pengesahan warna-warna tajwid di peringkat huruf.</li>
-      <li>Untuk menambah surah lain, kita boleh masukkan teks Arab + terjemahan terus di bahagian <code>#quran</code>.</li>
-    </ul>
-  </div>
+  <script>
+    // --- Config: endpoints (bergantung ketersediaan API pihak ketiga) ---
+    const API_TAJWID = surah => `https://api.alif.my.id/alquran/${surah}/tajwid`; // menyediakan tajwid
+    const API_TRANS = surah => `https://api.surah.my/surah/${surah}`; // terjemahan Melayu
+    const API_SURAH_AUDIO = surah => `https://api.alquran.cloud/v1/surah/${surah}/ar.alafasy`; // cuba audio alafasy (jika tersedia)
 
-  <footer class="card">
-    <div class="credit">Dibina oleh <strong>Zulkifli.MNA</strong>. Sila gunakan dengan niat ikhlas. Untuk bantuan upload ke GitHub Pages, hubungi saya atau ikut panduan GitHub Pages.</div>
-  </footer>
+    const surahSelect = document.getElementById('surah');
+    const quranDiv = document.getElementById('quran');
+    const loading = document.getElementById('loading');
+    const controls = document.getElementById('controls');
+    const playSurah = document.getElementById('playSurah');
+    let currentAudioUrl = null;
 
-</div>
+    // isi dropdown 1..114
+    for(let i=1;i<=114;i++){
+      const opt = document.createElement('option');
+      opt.value = i;
+      opt.textContent = `${i}. Surah ${i}`;
+      surahSelect.appendChild(opt);
+    }
 
-<script>
-  // (1) Kawalan pilihan surah (kebolehan tambah masa depan)
-  document.getElementById('surah').addEventListener('change', function(e){
-    // Sekarang hanya Al-Fatihah ada; boleh tambah fungsi untuk muatkan surah lain
-    alert('Untuk kini, hanya Surah Al-Fatihah disediakan. Nanti akan ditambah surah lain.');
-  });
+    async function loadSurah(n){
+      quranDiv.innerHTML='';
+      loading.style.display='block';
+      loading.textContent='Memuatkan surah...';
+      controls.style.display='none';
+      currentAudioUrl = null;
 
-  // (2) Nota: skrip di sini tidak memanggil API luar — segala teks sudah ada dalam fail ini.
-  // Jika anda mahu saya masukkan lebih banyak surah (juz 1-30), saya boleh sediakan versi zip berisi satu HTML penuh.
-</script>
+      try{
+        // fetch tajwid + translation concurrently
+        const [tRes,transRes,aRes] = await Promise.allSettled([
+          fetch(API_TAJWID(n)),
+          fetch(API_TRANS(n)),
+          fetch(API_SURAH_AUDIO(n))
+        ]);
+
+        const tajwidJson = tRes.status==='fulfilled' ? await tRes.value.json().catch(()=>null) : null;
+        const transJson = transRes.status==='fulfilled' ? await transRes.value.json().catch(()=>null) : null;
+        const audioJson = aRes.status==='fulfilled' ? await aRes.value.json().catch(()=>null) : null;
+
+        // audio handling: many APIs return audio URL under audio or data.audio; try common places
+        if(audioJson && audioJson.data && audioJson.data.ayahs && audioJson.data.recitation){
+          // older shape - skip
+        }
+        // try to get full surah audio from alquran.cloud response (some editions include audio, else edition info)
+        if(audioJson && audioJson.data && audioJson.data.audio){
+          currentAudioUrl = audioJson.data.audio; // unlikely
+        } else if(audioJson && audioJson.data && audioJson.edition && audioJson.edition.audio){
+          currentAudioUrl = audioJson.edition.audio;
+        } else if(audioJson && audioJson.data && audioJson.data.ayahs && audioJson.data.ayahs[0] && audioJson.data.ayahs[0].audioSecondary){
+          currentAudioUrl = audioJson.data.ayahs[0].audioSecondary[0];
+        } else {
+          // fallback: attempt construct common cdn url for full surah (may not work)
+          // currentAudioUrl = `https://cdn.islamic.network/quran/audio/128/ar.alafasy/${n}.mp3`; // commented out (unreliable)
+        }
+
+        // show controls if audio found
+        if(currentAudioUrl){
+          controls.style.display='flex';
+          playSurah.onclick = ()=> { new Audio(currentAudioUrl).play().catch(e=>alert('Audio tidak boleh dimainkan: '+e.message)); }
+        }
+
+        // show ayahs from tajwid data if available, else fallback message
+        if(tajwidJson && tajwidJson.data && tajwidJson.data.ayahs && tajwidJson.data.ayahs.length>0){
+          loading.style.display='none';
+          const ayahs = tajwidJson.data.ayahs;
+          // try translation array
+          const translations = (transJson && transJson.ayahs) ? transJson.ayahs : (transJson && transJson.translation) ? transJson.translation : null;
+
+          ayahs.forEach((ayahObj, idx) => {
+            const ayahDiv = document.createElement('div');
+            ayahDiv.className = 'ayah';
+            // tajwid API often returns text with <tajwid> tags or segmented spans; we'll try to use ayahObj.text if present
+            const arabic = ayahObj.text || ayahObj.ar || ayahObj.arabic || '';
+            // create translation if exists
+            let tranText = '';
+            if(translations && translations[idx]){
+              tranText = translations[idx].text || translations[idx].translation || translations[idx].translation_text || '';
+            } else if(transJson && transJson.translation && transJson.translation[idx]){
+              tranText = transJson.translation[idx].text || '';
+            }
+
+            // Many tajwid APIs include markup; attempt to safely insert innerHTML if it contains tags, otherwise plain text
+            const arabicEl = document.createElement('div');
+            arabicEl.className='arabic';
+            // if contains '<' assume HTML markup including span classes for tajwid from API
+            if(arabic.includes('<')){
+              arabicEl.innerHTML = arabic;
+            } else {
+              // fallback: escape and set text
+              arabicEl.textContent = arabic;
+            }
+
+            const transEl = document.createElement('div');
+            transEl.className='translation';
+            transEl.textContent = tranText;
+
+            ayahDiv.appendChild(arabicEl);
+            if(tranText) ayahDiv.appendChild(transEl);
+            quranDiv.appendChild(ayahDiv);
+          });
+        } else {
+          loading.textContent = '⚠️ Gagal memuat data tajwid/ayat dari API. Sila periksa sambungan internet atau cuba semula kemudian.';
+        }
+
+      }catch(err){
+        loading.textContent = '⚠️ Ralat: ' + (err.message || err);
+      }
+    }
+
+    // initial load surah 1 (Al-Fatihah)
+    surahSelect.value = 1;
+    loadSurah(1);
+
+    surahSelect.addEventListener('change', e => loadSurah(e.target.value));
+  </script>
 </body>
 </html>
