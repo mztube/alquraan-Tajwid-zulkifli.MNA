@@ -104,120 +104,88 @@
   </div>
 
   <script>
-    // --- Config: endpoints (bergantung ketersediaan API pihak ketiga) ---
-    const API_TAJWID = surah => `https://api.alif.my.id/alquran/${surah}/tajwid`; // menyediakan tajwid
-    const API_TRANS = surah => `https://api.surah.my/surah/${surah}`; // terjemahan Melayu
-    const API_SURAH_AUDIO = surah => `https://api.alquran.cloud/v1/surah/${surah}/ar.alafasy`; // cuba audio alafasy (jika tersedia)
+  const API_QURAN = surah => `https://api.alquran.cloud/v1/surah/${surah}`;
+  const API_TRANS = surah => `https://quran-api-id.vercel.app/surahs/${surah}`;
 
-    const surahSelect = document.getElementById('surah');
-    const quranDiv = document.getElementById('quran');
-    const loading = document.getElementById('loading');
-    const controls = document.getElementById('controls');
-    const playSurah = document.getElementById('playSurah');
-    let currentAudioUrl = null;
+  const surahSelect = document.getElementById('surah');
+  const quranDiv = document.getElementById('quran');
+  const loading = document.getElementById('loading');
+  const controls = document.getElementById('controls');
+  const playSurah = document.getElementById('playSurah');
+  let currentAudioUrl = null;
 
-    // isi dropdown 1..114
-    for(let i=1;i<=114;i++){
-      const opt = document.createElement('option');
-      opt.value = i;
-      opt.textContent = `${i}. Surah ${i}`;
-      surahSelect.appendChild(opt);
-    }
+  // isi dropdown 1..114
+  for (let i = 1; i <= 114; i++) {
+    const opt = document.createElement('option');
+    opt.value = i;
+    opt.textContent = `${i}. Surah ${i}`;
+    surahSelect.appendChild(opt);
+  }
 
-    async function loadSurah(n){
-      quranDiv.innerHTML='';
-      loading.style.display='block';
-      loading.textContent='Memuatkan surah...';
-      controls.style.display='none';
-      currentAudioUrl = null;
+  async function loadSurah(n) {
+    quranDiv.innerHTML = '';
+    loading.style.display = 'block';
+    loading.textContent = '📖 Memuatkan surah...';
+    controls.style.display = 'none';
+    currentAudioUrl = null;
 
-      try{
-        // fetch tajwid + translation concurrently
-        const [tRes,transRes,aRes] = await Promise.allSettled([
-          fetch(API_TAJWID(n)),
-          fetch(API_TRANS(n)),
-          fetch(API_SURAH_AUDIO(n))
-        ]);
+    try {
+      // Ambil ayat Arab & terjemahan
+      const [arabRes, transRes] = await Promise.all([
+        fetch(API_QURAN(n)),
+        fetch(API_TRANS(n))
+      ]);
 
-        const tajwidJson = tRes.status==='fulfilled' ? await tRes.value.json().catch(()=>null) : null;
-        const transJson = transRes.status==='fulfilled' ? await transRes.value.json().catch(()=>null) : null;
-        const audioJson = aRes.status==='fulfilled' ? await aRes.value.json().catch(()=>null) : null;
+      const arabData = await arabRes.json();
+      const transData = await transRes.json();
 
-        // audio handling: many APIs return audio URL under audio or data.audio; try common places
-        if(audioJson && audioJson.data && audioJson.data.ayahs && audioJson.data.recitation){
-          // older shape - skip
-        }
-        // try to get full surah audio from alquran.cloud response (some editions include audio, else edition info)
-        if(audioJson && audioJson.data && audioJson.data.audio){
-          currentAudioUrl = audioJson.data.audio; // unlikely
-        } else if(audioJson && audioJson.data && audioJson.edition && audioJson.edition.audio){
-          currentAudioUrl = audioJson.edition.audio;
-        } else if(audioJson && audioJson.data && audioJson.data.ayahs && audioJson.data.ayahs[0] && audioJson.data.ayahs[0].audioSecondary){
-          currentAudioUrl = audioJson.data.ayahs[0].audioSecondary[0];
-        } else {
-          // fallback: attempt construct common cdn url for full surah (may not work)
-          // currentAudioUrl = `https://cdn.islamic.network/quran/audio/128/ar.alafasy/${n}.mp3`; // commented out (unreliable)
-        }
-
-        // show controls if audio found
-        if(currentAudioUrl){
-          controls.style.display='flex';
-          playSurah.onclick = ()=> { new Audio(currentAudioUrl).play().catch(e=>alert('Audio tidak boleh dimainkan: '+e.message)); }
-        }
-
-        // show ayahs from tajwid data if available, else fallback message
-        if(tajwidJson && tajwidJson.data && tajwidJson.data.ayahs && tajwidJson.data.ayahs.length>0){
-          loading.style.display='none';
-          const ayahs = tajwidJson.data.ayahs;
-          // try translation array
-          const translations = (transJson && transJson.ayahs) ? transJson.ayahs : (transJson && transJson.translation) ? transJson.translation : null;
-
-          ayahs.forEach((ayahObj, idx) => {
-            const ayahDiv = document.createElement('div');
-            ayahDiv.className = 'ayah';
-            // tajwid API often returns text with <tajwid> tags or segmented spans; we'll try to use ayahObj.text if present
-            const arabic = ayahObj.text || ayahObj.ar || ayahObj.arabic || '';
-            // create translation if exists
-            let tranText = '';
-            if(translations && translations[idx]){
-              tranText = translations[idx].text || translations[idx].translation || translations[idx].translation_text || '';
-            } else if(transJson && transJson.translation && transJson.translation[idx]){
-              tranText = transJson.translation[idx].text || '';
-            }
-
-            // Many tajwid APIs include markup; attempt to safely insert innerHTML if it contains tags, otherwise plain text
-            const arabicEl = document.createElement('div');
-            arabicEl.className='arabic';
-            // if contains '<' assume HTML markup including span classes for tajwid from API
-            if(arabic.includes('<')){
-              arabicEl.innerHTML = arabic;
-            } else {
-              // fallback: escape and set text
-              arabicEl.textContent = arabic;
-            }
-
-            const transEl = document.createElement('div');
-            transEl.className='translation';
-            transEl.textContent = tranText;
-
-            ayahDiv.appendChild(arabicEl);
-            if(tranText) ayahDiv.appendChild(transEl);
-            quranDiv.appendChild(ayahDiv);
-          });
-        } else {
-          loading.textContent = '⚠️ Gagal memuat data tajwid/ayat dari API. Sila periksa sambungan internet atau cuba semula kemudian.';
-        }
-
-      }catch(err){
-        loading.textContent = '⚠️ Ralat: ' + (err.message || err);
+      // Semak data
+      if (!arabData.data || !transData.ayahs) {
+        loading.textContent = '⚠️ Gagal memuat data. Sila cuba semula.';
+        return;
       }
+
+      loading.style.display = 'none';
+      const ayahs = arabData.data.ayahs;
+      const transAyahs = transData.ayahs;
+
+      // Cuba dapatkan audio penuh surah
+      if (ayahs[0]?.audioSecondary?.[0]) {
+        currentAudioUrl = ayahs[0].audioSecondary[0];
+        controls.style.display = 'flex';
+        playSurah.onclick = () =>
+          new Audio(currentAudioUrl).play().catch(e =>
+            alert('Audio tidak dapat dimainkan: ' + e.message)
+          );
+      }
+
+      // Papar setiap ayat
+      ayahs.forEach((a, i) => {
+        const ayahDiv = document.createElement('div');
+        ayahDiv.className = 'ayah';
+
+        const arabicEl = document.createElement('div');
+        arabicEl.className = 'arabic';
+        arabicEl.textContent = a.text;
+
+        const transEl = document.createElement('div');
+        transEl.className = 'translation';
+        transEl.textContent = transAyahs[i]?.translation || '';
+
+        ayahDiv.appendChild(arabicEl);
+        ayahDiv.appendChild(transEl);
+        quranDiv.appendChild(ayahDiv);
+      });
+    } catch (err) {
+      loading.textContent = '⚠️ Ralat: ' + err.message;
     }
+  }
 
-    // initial load surah 1 (Al-Fatihah)
-    surahSelect.value = 1;
-    loadSurah(1);
+  // Muat surah pertama (Al-Fatihah)
+  surahSelect.value = 1;
+  loadSurah(1);
 
-    surahSelect.addEventListener('change', e => loadSurah(e.target.value));
-  </script>
+  surahSelect.addEventListener('change', e => loadSurah(e.target.value));
+</script>
 </body>
 </html>
