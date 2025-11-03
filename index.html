@@ -1,69 +1,148 @@
-<!DOCTYPE html>
-<html lang="ar">
+<!doctype html>
+<html lang="ms">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Al-Fatihah (Tajwid & Terjemahan Melayu)</title>
-
-<!-- Import font Quran khas -->
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Surah Al-Fatihah — Mushaf Klasik Hijau</title>
+<meta name="description" content="Surah Al-Fatihah dengan gaya mushaf klasik, tajwid berwarna, terjemahan Melayu dan audio Al-Afasy.">
 <link href="https://fonts.googleapis.com/css2?family=Scheherazade+New&display=swap" rel="stylesheet">
-
 <style>
-  body {
-    background: #f9f9f9;
-    text-align: center;
-    font-family: 'Scheherazade New', serif;
-    padding: 20px;
+  :root{
+    --bg:#eaf6ef;
+    --paper:#fffaf3;
+    --frame:#dbeee0;
+    --accent:#0b6b45;
+    --green:#007a3d;
+    --soft:#f3f7f4;
   }
-  h2 {
-    font-size: 26px;
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:var(--bg);
+    font-family:"Scheherazade New","Noto Naskh Arabic",serif;
+    color:#111;
   }
-  .quran {
-    direction: rtl;
-    font-size: 40px;
-    background: #fff;
-    padding: 25px;
-    border-radius: 12px;
-    display: inline-block;
-    line-height: 2.5;
-    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+  .wrap{
+    max-width:900px;
+    margin:30px auto;
+    background:linear-gradient(180deg,var(--paper),#fff);
+    border:10px solid var(--frame);
+    border-radius:15px;
+    padding:24px;
+    box-shadow:0 6px 18px rgba(0,0,0,0.08);
   }
-  .translation {
-    background: #fff;
-    margin-top: 20px;
-    padding: 15px;
-    border-radius: 12px;
-    max-width: 600px;
-    display: inline-block;
-    font-size: 18px;
+  h1{
+    text-align:center;
+    color:var(--accent);
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:22px;
+    margin-bottom:10px;
   }
-  .tajwid-red { color: red; }
-  .tajwid-green { color: green; }
-  .tajwid-blue { color: blue; }
+  .meta{text-align:center;color:#555;font-size:14px;margin-bottom:20px}
+  .bismillah{
+    font-size:26px;
+    color:var(--green);
+    text-align:center;
+    margin:20px 0;
+  }
+  .ayah{
+    direction:rtl;
+    text-align:right;
+    font-size:34px;
+    line-height:2.1;
+    margin:8px 0;
+  }
+  .verse-num{
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:14px;
+    color:#666;
+    margin-left:8px;
+  }
+  .translation{
+    background:var(--soft);
+    border-radius:10px;
+    padding:14px 18px;
+    font-size:18px;
+    margin-top:24px;
+    line-height:1.7;
+    text-align:left;
+    color:#222;
+  }
+  .controls{
+    text-align:center;
+    margin-bottom:20px;
+  }
+  button{
+    background:var(--accent);
+    color:#fff;
+    border:0;
+    padding:10px 18px;
+    border-radius:8px;
+    font-size:16px;
+    font-weight:bold;
+    margin:4px;
+  }
+  footer{
+    text-align:center;
+    color:#234;
+    margin-top:20px;
+    font-size:13px;
+  }
+  /* Tajwid Warna */
+  .tj-madd{color:#008000}
+  .tj-idgham{color:#ff6600}
+  .tj-ikhfa{color:#cc00ff}
+  .tj-qalqalah{color:#0000cc}
+  .tj-ghunnah{color:#ff0000}
+  @media(max-width:520px){
+    .ayah{font-size:26px;line-height:1.9}
+    .bismillah{font-size:20px}
+  }
 </style>
 </head>
 <body>
-  <h2>Al-Fatihah (Tajwid & Terjemahan Melayu)</h2>
+  <div class="wrap">
+    <h1>سورة الفاتحة — Surah Al-Fatihah</h1>
+    <div class="meta">Tema mushaf klasik hijau lembut • Bacaan &amp; terjemahan oleh Zulkifli.MNA</div>
 
-  <div class="quran">
-    بِسْمِ <span class="tajwid-red">اللّٰهِ</span> الرَّحْمٰنِ الرَّحِيمِ<br>
-    اَلْـحَمْدُ لِلّٰهِ رَبِّ الْعٰلَمِينَ<br>
-    الرَّحْمٰنِ الرَّحِيمِ<br>
-    مٰلِكِ يَوْمِ الدِّينِ<br>
-    إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ<br>
-    اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ<br>
-    صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ
+    <div class="controls">
+      <button id="play">▶️ Dengar Bacaan (Al-Afasy)</button>
+      <button id="pause" style="background:#6aa87a">⏸️ Henti</button>
+    </div>
+
+    <div class="bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+
+    <div class="ayah"><span class="verse-num">1</span> <span class="tj-madd">ٱلْحَمْدُ</span> لِلَّهِ رَبِّ ٱلْعَالَمِينَ</div>
+    <div class="ayah"><span class="verse-num">2</span> <span class="tj-ikhfa">ٱلرَّحْمَـٰنِ</span> <span class="tj-madd">ٱلرَّحِيمِ</span></div>
+    <div class="ayah"><span class="verse-num">3</span> <span class="tj-idgham">مَـٰلِكِ</span> يَوْمِ ٱلدِّينِ</div>
+    <div class="ayah"><span class="verse-num">4</span> إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ</div>
+    <div class="ayah"><span class="verse-num">5</span> ٱهْدِنَا ٱلصِّرَٰطَ ٱلْمُسْتَقِيمَ</div>
+    <div class="ayah"><span class="verse-num">6</span> صِرَٰطَ ٱلَّذِينَ أَنْعَمْتَ عَلَيْهِمْ</div>
+    <div class="ayah"><span class="verse-num">7</span> غَيْرِ ٱلْمَغْضُوبِ عَلَيْهِمْ وَلَا ٱلضَّآلِّينَ</div>
+
+    <div class="translation">
+      <strong>Terjemahan Bahasa Melayu:</strong><br><br>
+      Dengan nama Allah Yang Maha Pemurah lagi Maha Penyayang.<br>
+      Segala puji bagi Allah, Tuhan sekalian alam.<br>
+      Yang Maha Pemurah lagi Maha Penyayang.<br>
+      Yang Menguasai hari Pembalasan.<br>
+      Hanya kepada-Mu kami menyembah dan hanya kepada-Mu kami memohon pertolongan.<br>
+      Tunjukilah kami jalan yang lurus.<br>
+      Iaitu jalan orang-orang yang Engkau telah kurniakan nikmat kepada mereka; bukan jalan mereka yang dimurkai dan bukan pula jalan orang yang sesat.
+    </div>
+
+    <footer>
+      Audio bacaan oleh <b>Mishary Al-Afasy</b> • Reka bentuk oleh <b>Zulkifli.MNA</b>
+    </footer>
   </div>
 
-  <div class="translation">
-    Dengan nama Allah Yang Maha Pemurah lagi Maha Penyayang.<br>
-    Segala puji bagi Allah, Tuhan sekalian alam.<br>
-    Yang Maha Pemurah lagi Maha Penyayang.<br>
-    Yang Menguasai hari Pembalasan.<br>
-    Hanya kepada-Mu kami menyembah dan hanya kepada-Mu kami memohon pertolongan.<br>
-    Tunjukilah kami jalan yang lurus,<br>
-    Iaitu jalan orang-orang yang Engkau telah kurniakan nikmat kepada mereka,
-    bukan jalan mereka yang dimurkai dan bukan jalan mereka yang sesat.
-  </div>
+  <script>
+    const audioUrl = 'https://cdn.islamic.network/quran/audio/128/ar.alafasy/1.mp3';
+    const audio = new Audio(audioUrl);
+    document.getElementById('play').onclick = ()=>audio.play();
+    document.getElementById('pause').onclick = ()=>{
+      audio.pause();
+      audio.currentTime = 0;
+    };
+  </script>
 </body>
 </html>
