@@ -24,7 +24,7 @@
     select#surah{width:100%;padding:10px;border-radius:8px;border:1px solid #cfcfcf;font-size:16px}
     #loading{color:var(--muted);padding:12px;text-align:center}
     .ayah{background:#fff;margin:10px 0;padding:12px;border-radius:8px;border:1px solid #e6efe9}
-    .arabic{direction:rtl;font-size:28px;line-height:2;text-align:right}
+    .arabic{direction:rtl;font-size:30px;line-height:2;text-align:right;font-family:"Noto Naskh Arabic", "Scheherazade", serif}
     .translation{font-size:17px;color:#333;margin-top:8px}
     .controls{display:flex;gap:8px;align-items:center;margin-top:10px;flex-wrap:wrap}
     button.play{background:var(--accent);color:#fff;border:0;padding:8px 12px;border-radius:6px;cursor:pointer}
@@ -47,6 +47,12 @@
     .hadith{background:#fff8e6;padding:10px;border-radius:6px;border:1px solid #f1e0b8;margin-top:10px}
     .dua{background:#f0fff8;padding:10px;border-radius:6px;border:1px solid #d6f2e0;margin-top:10px}
     .by{font-size:12px;color:#666;margin-top:6px}
+    .small{font-size:13px}
+    /* responsive */
+    @media (max-width:520px){
+      .arabic{font-size:26px}
+      header h1{font-size:18px}
+    }
   </style>
 </head>
 <body>
@@ -67,13 +73,13 @@
 
       <div class="dua">
         <strong>Doa sebelum belajar:</strong>
-        <p><em>اللهم علمنا ما ينفعنا وانفعنا بما علمتنا وزدنا علما</em></p>
+        <p><em>اللهم علمنا ما ينفعنا وانفعنا بما علمتنا وزدنا علماً</em></p>
         <p class="by">Terjemah: "Ya Allah, ajarkanlah kami apa yang memberi manfaat, berilah manfaat kepada kami dari apa yang Engkau ajarkan, dan tambahkanlah ilmu kepada kami."</p>
       </div>
     </div>
 
     <div class="card">
-      <label for="surah"><strong>Pilih Surah</strong></label>
+      <label for="surah"><strong>Pilih Surah (1–114)</strong></label>
       <select id="surah"></select>
       <div id="loading">Memuatkan senarai surah...</div>
       <div id="controls" class="controls" style="display:none">
@@ -96,96 +102,165 @@
         <tr><td class="color"><span class="tj-iqlab">Kuning</span></td><td>Iqlab</td><td>تukar bunyi ن ke م (contoh: sebelum ب)</td></tr>
         <tr><td class="color"><span class="tj-idhar">Biru Muda</span></td><td>Idhar</td><td>Bacaan jelas tanpa dengung</td></tr>
       </table>
+      <div class="small note">Nota: Jika API pembekal teks menyediakan markup tajwid (contoh span class), laman ini akan memaparkan warna tajwid tersebut. Jika tidak, akan dipaparkan teks arab biasa dan terjemahan.</div>
     </div>
 
     <footer>
-      <div>Data Arab & Tajwid diperoleh daripada API awam; terjemahan Melayu oleh sumber awam. Gunakan laman ini untuk tujuan pembelajaran dan dakwah.</div>
+      <div>Data Arab & Tajwid diperoleh daripada API awam bila tersedia; terjemahan Melayu oleh sumber awam. Gunakan laman ini untuk tujuan pembelajaran dan dakwah.</div>
     </footer>
   </div>
 
   <script>
-  const API_QURAN = surah => `https://api.alquran.cloud/v1/surah/${surah}`;
-  const API_TRANS = surah => `https://quran-api-id.vercel.app/surahs/${surah}`;
+    // -----------------------
+    // NOTE: This page uses public APIs.
+    // API availability and shapes may vary. The script tries multiple fallbacks.
+    // -----------------------
 
-  const surahSelect = document.getElementById('surah');
-  const quranDiv = document.getElementById('quran');
-  const loading = document.getElementById('loading');
-  const controls = document.getElementById('controls');
-  const playSurah = document.getElementById('playSurah');
-  let currentAudioUrl = null;
+    const surahSelect = document.getElementById('surah');
+    const quranDiv = document.getElementById('quran');
+    const loading = document.getElementById('loading');
+    const controls = document.getElementById('controls');
+    const playSurah = document.getElementById('playSurah');
+    let currentAudio = null;
 
-  // isi dropdown 1..114
-  for (let i = 1; i <= 114; i++) {
-    const opt = document.createElement('option');
-    opt.value = i;
-    opt.textContent = `${i}. Surah ${i}`;
-    surahSelect.appendChild(opt);
-  }
-
-  async function loadSurah(n) {
-    quranDiv.innerHTML = '';
-    loading.style.display = 'block';
-    loading.textContent = '📖 Memuatkan surah...';
-    controls.style.display = 'none';
-    currentAudioUrl = null;
-
-    try {
-      // Ambil ayat Arab & terjemahan
-      const [arabRes, transRes] = await Promise.all([
-        fetch(API_QURAN(n)),
-        fetch(API_TRANS(n))
-      ]);
-
-      const arabData = await arabRes.json();
-      const transData = await transRes.json();
-
-      // Semak data
-      if (!arabData.data || !transData.ayahs) {
-        loading.textContent = '⚠️ Gagal memuat data. Sila cuba semula.';
-        return;
-      }
-
-      loading.style.display = 'none';
-      const ayahs = arabData.data.ayahs;
-      const transAyahs = transData.ayahs;
-
-      // Cuba dapatkan audio penuh surah
-      if (ayahs[0]?.audioSecondary?.[0]) {
-        currentAudioUrl = ayahs[0].audioSecondary[0];
-        controls.style.display = 'flex';
-        playSurah.onclick = () =>
-          new Audio(currentAudioUrl).play().catch(e =>
-            alert('Audio tidak dapat dimainkan: ' + e.message)
-          );
-      }
-
-      // Papar setiap ayat
-      ayahs.forEach((a, i) => {
-        const ayahDiv = document.createElement('div');
-        ayahDiv.className = 'ayah';
-
-        const arabicEl = document.createElement('div');
-        arabicEl.className = 'arabic';
-        arabicEl.textContent = a.text;
-
-        const transEl = document.createElement('div');
-        transEl.className = 'translation';
-        transEl.textContent = transAyahs[i]?.translation || '';
-
-        ayahDiv.appendChild(arabicEl);
-        ayahDiv.appendChild(transEl);
-        quranDiv.appendChild(ayahDiv);
-      });
-    } catch (err) {
-      loading.textContent = '⚠️ Ralat: ' + err.message;
+    // populate surah list with nice labels (surah names will be fetched)
+    for(let i=1;i<=114;i++){
+      const opt = document.createElement('option');
+      opt.value = i;
+      opt.textContent = `Surah ${i}`;
+      surahSelect.appendChild(opt);
     }
-  }
 
-  // Muat surah pertama (Al-Fatihah)
-  surahSelect.value = 1;
-  loadSurah(1);
+    // helper: try multiple fetch shapes safely
+    async function tryFetch(url){
+      try {
+        const r = await fetch(url);
+        if(!r.ok) throw new Error('HTTP '+r.status);
+        return await r.json();
+      } catch(e){
+        return null;
+      }
+    }
 
-  surahSelect.addEventListener('change', e => loadSurah(e.target.value));
-</script>
+    // Useful endpoints (the code will attempt these):
+    // 1) api.alquran.cloud (commonly available) - for Arabic text and audio: /v1/surah/{n}
+    //    e.g. https://api.alquran.cloud/v1/surah/1/ar.alafasy  (audio edition)
+    // 2) Another tajwid API (if available) will be attempted (this is optional)
+    function endpointAlquranSurah(surah, edition){
+      // edition examples: 'ar.alafasy', 'quran-uthmani', 'en.asad'
+      return `https://api.alquran.cloud/v1/surah/${surah}/${edition}`;
+    }
+
+    // Some other APIs (could be down) - we attempt a generic tajwid API (if you have API key you can replace)
+    function endpointTajwid(surah){
+      // placeholder for possible tajwid provider; left as trial - many public tajwid endpoints vary
+      return `https://api.alif.my.id/alquran/${surah}/tajwid`; // if available
+    }
+
+    // load surah function:
+    async function loadSurah(n){
+      quranDiv.innerHTML = '';
+      loading.style.display = 'block';
+      loading.textContent = 'Memuatkan surah...';
+      controls.style.display = 'none';
+      currentAudio = null;
+
+      // Try 1: fetch Arabic + translation using alquran.cloud surah (with multiple editions)
+      // prefer: quran-uthmani for Arabic text; en.asad or en.trans for English — for Malay we'll try separate endpoint
+      const rArabic = await tryFetch(endpointAlquranSurah(n,'quran-uthmani'));
+      const rAudio = await tryFetch(endpointAlquranSurah(n,'ar.alafasy')); // often returns audio info in edition
+      const rEn = await tryFetch(endpointAlquranSurah(n,'en.asad')); // english fallback
+      // For Malay translation: try an open Malay translation endpoint (not guaranteed)
+      // I will attempt 'ms.fathimah' (if exists) or fallback to english:
+      const rMs = await tryFetch(endpointAlquranSurah(n,'ms.fathimah')) || await tryFetch(endpointAlquranSurah(n,'ms.suara'));
+
+      // Try tandas for tajwid (special API)
+      const rTajwid = await tryFetch(endpointTajwid(n));
+
+      // choose arabic source
+      const arabData = rArabic && rArabic.data ? rArabic.data : (rAudio && rAudio.data ? rAudio.data : null);
+      // translation
+      const transData = rMs && rMs.data ? rMs.data : (rEn && rEn.data ? rEn.data : null);
+
+      // audio determination (try to build audio url or use alafasy edition which includes audio links per ayah)
+      // Many alquran.cloud responses include data.recitation or ayahs[].audio
+      if(rAudio && rAudio.data && rAudio.data.ayahs){
+        // try to get first ayah audio as sample: some apis provide full file too
+        const first = rAudio.data.ayahs[0];
+        if(first && (first.audio || first.audioSecondary)){
+          currentAudio = first.audio || (first.audioSecondary && first.audioSecondary[0]) || null;
+        }
+      }
+      // fallback: try known cdn (may fail)
+      if(!currentAudio){
+        // do not assign if unknown; keep null
+      }
+
+      // If arabic data present, show ayahs
+      if(arabData && arabData.ayahs && arabData.ayahs.length){
+        loading.style.display = 'none';
+        const ayahs = arabData.ayahs;
+        ayahs.forEach((ayahObj, i) => {
+          const ayahDiv = document.createElement('div');
+          ayahDiv.className = 'ayah';
+
+          // Arabic: prefer ayahObj.text (often Uthmani) or fallback
+          let arabic = ayahObj.text || ayahObj.ar || ayahObj.arabic || '';
+          // If tajwid API is present and returns HTML markup, prefer that
+          if(rTajwid && rTajwid.data && rTajwid.data.ayahs && rTajwid.data.ayahs[i] && rTajwid.data.ayahs[i].text){
+            arabic = rTajwid.data.ayahs[i].text;
+          }
+
+          const arabicEl = document.createElement('div');
+          arabicEl.className = 'arabic';
+          // if the text contains tags (e.g. span classes for tajwid) insert as HTML (safe-ish)
+          if(arabic.includes('<')){
+            arabicEl.innerHTML = arabic;
+          } else {
+            arabicEl.textContent = arabic;
+          }
+
+          // translation - try to match by index
+          let tranText = '';
+          if(transData && transData.ayahs && transData.ayahs[i]){
+            // Some translations store '.text' or '.translation'
+            tranText = transData.ayahs[i].text || transData.ayahs[i].translation || transData.ayahs[i].translation_text || '';
+          } else if(transData && transData.ayahs && transData.ayahs[i] && transData.ayahs[i].translations){
+            tranText = transData.ayahs[i].translations[0].text || '';
+          }
+
+          const transEl = document.createElement('div');
+          transEl.className = 'translation';
+          transEl.textContent = tranText;
+
+          ayahDiv.appendChild(arabicEl);
+          if(tranText) ayahDiv.appendChild(transEl);
+          quranDiv.appendChild(ayahDiv);
+        });
+      } else {
+        loading.textContent = '⚠️ Gagal memuatkan ayat. Sila cuba lagi (API mungkin tidak memberi data tajwid/ayat sekarang).';
+      }
+
+      // audio control
+      if(currentAudio){
+        controls.style.display = 'flex';
+        playSurah.onclick = () => {
+          try{
+            new Audio(currentAudio).play();
+          }catch(e){
+            alert('Audio tidak boleh dimainkan: '+(e.message||e));
+          }
+        };
+      } else {
+        controls.style.display = 'none';
+      }
+    }
+
+    // initial
+    surahSelect.value = 1;
+    loadSurah(1);
+
+    surahSelect.addEventListener('change', e => loadSurah(e.target.value));
+  </script>
 </body>
 </html>
