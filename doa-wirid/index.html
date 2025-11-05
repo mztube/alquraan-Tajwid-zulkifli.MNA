@@ -1,0 +1,331 @@
+<!-- simpan sebagai doa.html -->
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Himpunan Doa Selepas Solat</title>
+<meta name="description" content="Kumpulkan dan kongsi doa selepas solat — teks Arab, terjemah Melayu, audio (jika ada) — simpan secara setempat." />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#eef7ef;
+    --panel:#ffffff;
+    --accent:#2f6b46;
+    --muted:#55615a;
+    --card-shadow: 0 6px 18px rgba(0,0,0,.06);
+    --maxw:980px;
+    --arabic-font: "Noto Naskh Arabic", "Lateef", "Amiri", serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Inter, Arial, sans-serif;background:var(--bg);color:#16321f}
+  .wrap{max-width:900px;margin:18px auto;padding:16px}
+  header{background:var(--accent);color:#fff;padding:18px;border-radius:10px;text-align:center;box-shadow:var(--card-shadow)}
+  header h1{margin:0;font-size:20px}
+  header p{margin:6px 0 0;font-size:14px;opacity:.95}
+  .panel{background:var(--panel);border-radius:10px;padding:14px;margin-top:14px;box-shadow:var(--card-shadow)}
+  .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  label{font-size:13px;color:var(--muted)}
+  input[type="text"], textarea, select{width:100%;padding:10px;border-radius:8px;border:1px solid #dfeee0;font-size:14px}
+  textarea{min-height:90px;resize:vertical}
+  button{padding:8px 12px;border-radius:8px;border:0;background:var(--accent);color:#fff;cursor:pointer}
+  button.ghost{background:#fff;color:var(--accent);border:1px solid #d6e6db}
+  .controls{display:flex;gap:8px;align-items:center}
+  .search{width:100%;margin-top:10px}
+  .doa-item{border-radius:8px;padding:14px;margin:12px 0;border:1px solid #e6efe6;background:#fff;position:relative}
+  .arabic{font-family:var(--arabic-font);direction:rtl;text-align:right;font-size:26px;line-height:1.6;color:#111}
+  .translation{margin-top:8px;color:#2b3b34;font-size:15px;line-height:1.5}
+  .meta{font-size:13px;color:var(--muted);margin-top:8px}
+  .tag{display:inline-block;background:#f0fff6;color:var(--accent);padding:6px 8px;border-radius:999px;font-size:12px;margin-right:6px}
+  .small{font-size:13px;color:var(--muted)}
+  .actions{position:absolute;right:14px;top:14px;display:flex;gap:6px}
+  .actions button{padding:6px 8px;font-size:13px}
+  .no-data{padding:30px;text-align:center;color:var(--muted)}
+  footer{margin-top:16px;padding:12px;border-radius:8px;background:#f6fff6;color:var(--muted);font-size:13px;text-align:center}
+  @media(max-width:520px){
+    .arabic{font-size:20px}
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Himpunan Doa Selepas Solat</h1>
+      <p>Kumpul, baca dan kongsi doa — tambahkan terjemahan & audio (pilihan)</p>
+    </header>
+
+    <div class="panel" aria-labelledby="formTitle">
+      <div class="row" style="gap:12px">
+        <div style="flex:1">
+          <label id="formTitle">Tambah Doa Baru (Arab)</label>
+          <textarea id="arabic" placeholder="Teks doa (Arab - boleh masukkan markup kecil jika mahu)"></textarea>
+        </div>
+        <div style="flex:1">
+          <label>Terjemah (Melayu)</label>
+          <textarea id="translation" placeholder="Terjemahan Melayu"></textarea>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:8px;margin-top:10px;align-items:center;flex-wrap:wrap">
+        <div style="flex:1">
+          <label>Tag / Kategori (contoh: ringkas, taubat)</label>
+          <input id="tags" placeholder="pisahkan dengan koma" />
+        </div>
+        <div style="min-width:220px">
+          <label>URL audio (optional)</label>
+          <input id="audioUrl" placeholder="https://... (mp3 link)" />
+        </div>
+      </div>
+
+      <div style="display:flex;gap:8px;margin-top:10px;justify-content:flex-end">
+        <button id="saveBtn">Tambah & Simpan</button>
+        <button id="clearStorage" class="ghost">Padam Semua Simpanan</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="row">
+        <div style="flex:1">
+          <label class="small">Carian / filter</label>
+          <input id="search" class="search" placeholder="Carian teks doa, tag atau terjemahan..." />
+        </div>
+        <div style="width:220px">
+          <label class="small">Sort</label>
+          <select id="sort">
+            <option value="new">Terbaharu</option>
+            <option value="alpha">Abjad</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="list" style="margin-top:12px"></div>
+      <div id="empty" class="no-data" style="display:none">Tiada doa disimpan. Tambah doa pada borang di atas.</div>
+    </div>
+
+    <footer>
+      Data tersimpan hanya pada pelayar anda (localStorage). Untuk kongsi dengan orang lain, gunakan butang salin atau eksport.
+    </footer>
+  </div>
+
+<script>
+/* Simple client-only storage + UI */
+const STORAGE_KEY = 'doa_himpunan_v1';
+const arabEl = document.getElementById('arabic');
+const transEl = document.getElementById('translation');
+const tagsEl = document.getElementById('tags');
+const audioEl = document.getElementById('audioUrl');
+const saveBtn = document.getElementById('saveBtn');
+const listEl = document.getElementById('list');
+const emptyEl = document.getElementById('empty');
+const searchEl = document.getElementById('search');
+const sortEl = document.getElementById('sort');
+const clearBtn = document.getElementById('clearStorage');
+
+let items = [];
+
+// load from localStorage
+function loadItems(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    items = raw ? JSON.parse(raw) : defaultSamples();
+  }catch(e){
+    items = defaultSamples();
+  }
+  render();
+}
+
+// default sample doa (boleh ubah)
+function defaultSamples(){
+  return [
+    {
+      id: genId(),
+      arabic: 'أَسْتَغْفِرُ اللَّهَ',
+      translation: 'Aku memohon ampun kepada Allah.',
+      tags: ['ringkas','istighfar'],
+      audio: ''
+    },
+    {
+      id: genId(),
+      arabic: 'اللَّهُمَّ أَجِرْنِي مِنَ الْجَهْدِ وَالْكَربِ',
+      translation: 'Ya Allah, peliharalah aku dari kepayahan dan kesusahan.',
+      tags: ['doa','perlindungan'],
+      audio: ''
+    },
+    {
+      id: genId(),
+      arabic: 'رَبَّنَا تَقَبَّلْ مِنَّا ۖ إِنَّكَ أَنتَ السَّمِيعُ الْعَلِيم',
+      translation: 'Ya Tuhan kami, terimalah (ibadah) kami; sesungguhnya Engkau Maha Mendengar lagi Maha Mengetahui.',
+      tags: ['taubat','munajat'],
+      audio: ''
+    }
+  ];
+}
+
+function genId(){ return 'd'+Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
+
+function saveItems(){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+}
+
+// render list
+function render(){
+  const q = (searchEl.value || '').toLowerCase().trim();
+  let data = items.slice();
+
+  if(q){
+    data = data.filter(it=>{
+      return (it.arabic && it.arabic.toLowerCase().includes(q)) ||
+             (it.translation && it.translation.toLowerCase().includes(q)) ||
+             (it.tags && it.tags.join(' ').toLowerCase().includes(q));
+    });
+  }
+
+  if(sortEl.value === 'alpha'){
+    data.sort((a,b)=> (a.translation||'').localeCompare(b.translation||''));
+  } else {
+    data.sort((a,b)=> b.createdAt - a.createdAt);
+  }
+
+  listEl.innerHTML = '';
+  if(!data.length){
+    emptyEl.style.display = 'block';
+    return;
+  } else {
+    emptyEl.style.display = 'none';
+  }
+
+  data.forEach(it=>{
+    const d = document.createElement('div');
+    d.className = 'doa-item';
+
+    // actions: copy / play / edit / delete
+    const actions = document.createElement('div');
+    actions.className = 'actions';
+    const copyBtn = document.createElement('button'); copyBtn.textContent='Salin'; copyBtn.className='ghost';
+    const playBtn = document.createElement('button'); playBtn.textContent='▶'; playBtn.className='ghost';
+    const editBtn = document.createElement('button'); editBtn.textContent='Edit'; editBtn.className='ghost';
+    const delBtn = document.createElement('button'); delBtn.textContent='Padam'; delBtn.className='ghost';
+
+    copyBtn.onclick = ()=> {
+      const text = (it.arabic||'') + '\n\n' + (it.translation||'');
+      navigator.clipboard?.writeText(text).then(()=> alert('Disalin ke papan keratan.'));
+    };
+
+    playBtn.onclick = ()=> {
+      if(!it.audio){ alert('Tiada audio disimpan untuk doa ini. Anda boleh tambahkan URL audio semasa edit.'); return; }
+      const a = new Audio(it.audio);
+      a.play().catch(e=> alert('Audio tidak boleh dimainkan: '+e.message));
+    };
+
+    editBtn.onclick = ()=> {
+      const newArab = prompt('Sunting teks Arab', it.arabic);
+      if(newArab===null) return;
+      const newTrans = prompt('Sunting terjemah Melayu', it.translation || '');
+      if(newTrans===null) return;
+      const newTags = prompt('Sunting tag (pisah koma)', (it.tags||[]).join(','));
+      const newAudio = prompt('URL audio (biarkan kosong untuk tiada)', it.audio || '');
+      it.arabic = newArab;
+      it.translation = newTrans;
+      it.tags = newTags ? newTags.split(',').map(s=>s.trim()).filter(Boolean) : [];
+      it.audio = newAudio || '';
+      saveItems();
+      render();
+    };
+
+    delBtn.onclick = ()=> {
+      if(!confirm('Padam doa ini?')) return;
+      items = items.filter(x=>x.id !== it.id);
+      saveItems();
+      render();
+    };
+
+    actions.appendChild(copyBtn);
+    actions.appendChild(playBtn);
+    actions.appendChild(editBtn);
+    actions.appendChild(delBtn);
+
+    d.appendChild(actions);
+
+    // Arabic
+    const ar = document.createElement('div');
+    ar.className = 'arabic';
+    // allow minimal HTML in stored arabic (e.g. span), but sanitize simply by not allowing <script>
+    const safe = (it.arabic || '').replace(/<script[\s\S]*?>[\s\S]*?<\/script>/ig,'');
+    // if the stored text contains any '<' we assume markup intended; else plain text
+    if(/<[^>]+>/.test(safe)){
+      ar.innerHTML = safe;
+    } else {
+      ar.textContent = safe;
+    }
+
+    d.appendChild(ar);
+
+    // tags
+    if(it.tags && it.tags.length){
+      const meta = document.createElement('div');
+      meta.className = 'meta';
+      it.tags.forEach(t=>{
+        const span = document.createElement('span');
+        span.className = 'tag';
+        span.textContent = t;
+        meta.appendChild(span);
+      });
+      d.appendChild(meta);
+    }
+
+    // translation + audio note
+    const tr = document.createElement('div');
+    tr.className = 'translation';
+    tr.textContent = it.translation || '';
+    d.appendChild(tr);
+
+    if(it.audio){
+      const meta2 = document.createElement('div');
+      meta2.className = 'meta';
+      meta2.innerHTML = 'Audio: <a href="'+it.audio+'" target="_blank" rel="noopener">buka</a>';
+      d.appendChild(meta2);
+    }
+
+    listEl.appendChild(d);
+  });
+}
+
+// add new
+saveBtn.addEventListener('click', ()=>{
+  const arab = arabEl.value.trim();
+  const trans = transEl.value.trim();
+  const tags = (tagsEl.value||'').split(',').map(s=>s.trim()).filter(Boolean);
+  const audio = (audioEl.value||'').trim();
+  if(!arab && !trans){ alert('Sila masukkan teks doa (Arab atau terjemah).'); return; }
+  const obj = {
+    id: genId(),
+    arabic: arab,
+    translation: trans,
+    tags: tags,
+    audio: audio,
+    createdAt: Date.now()
+  };
+  items.unshift(obj);
+  saveItems();
+  render();
+  // clear form
+  arabEl.value=''; transEl.value=''; tagsEl.value=''; audioEl.value='';
+  alert('Doa ditambah dan disimpan setempat.');
+});
+
+// clear storage
+clearBtn.addEventListener('click', ()=>{
+  if(!confirm('Padam semua doa yang disimpan secara setempat?')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  loadItems();
+});
+
+// search + sort events
+searchEl.addEventListener('input', ()=> render());
+sortEl.addEventListener('change', ()=> render());
+
+// initial load
+loadItems();
+</script>
+</body>
+</html>
