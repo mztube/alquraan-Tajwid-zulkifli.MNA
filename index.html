@@ -199,7 +199,29 @@ async function loadSurah(surahNum){
     surahName.textContent = `Surah ${surahNum}`;
     surahMeta.textContent = `Surah nombor ${surahNum}`;
   }
+// Paparkan setiap ayat dalam kotak
+if (arabicJson && arabicJson.data && arabicJson.data.ayahs) {
+  arabicJson.data.ayahs.forEach((ayah, index) => {
+    const box = document.createElement('div');
+    box.className = 'ayah-box';
+    box.innerHTML = `
+      <div class="ayah-number">${ayah.numberInSurah}</div>
+      <div class="ayah-text" dir="rtl">${ayah.text}</div>
+      <div class="ayah-translation">${
+        transJson && transJson.data && transJson.data.ayahs
+          ? transJson.data.ayahs[index].text
+          : ''
+      }</div>
+      <button class="play-ayah" data-audio="${ayah.audio}">▶ Ayat</button>
+    `;
+    ayahContainer.appendChild(box);
+  });
 
+  mushafEl.style.display = 'block';
+  statusEl.textContent = '';
+} else {
+  statusEl.textContent = 'Gagal memuat ayat.';
+}
   // fetch audio per-ayah from selected reciter (try alquran.cloud edition)
   const reciter = reciterSelect.value || 'ar.alafasy';
   const audioJson = await tryFetch(`https://api.alquran.cloud/v1/surah/${surahNum}/${reciter}`);
