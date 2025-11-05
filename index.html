@@ -126,32 +126,50 @@
     otherwise plain text. Tajwid colour mapping CSS classes provided above for future markup.
 */
 
-const surahNames = [
-  "Al-Fatihah", "Al-Baqarah", "Ali 'Imran", "An-Nisa’", "Al-Ma’idah", "Al-An’am", "Al-A’raf",
-  "Al-Anfal", "At-Taubah", "Yunus", "Hud", "Yusuf", "Ar-Ra’d", "Ibrahim", "Al-Hijr", "An-Nahl",
-  "Al-Isra’", "Al-Kahf", "Maryam", "Taha", "Al-Anbiya’", "Al-Hajj", "Al-Mu’minun", "An-Nur",
-  "Al-Furqan", "Ash-Shu’ara’", "An-Naml", "Al-Qasas", "Al-Ankabut", "Ar-Rum", "Luqman", "As-Sajdah",
-  "Al-Ahzab", "Saba’", "Fatir", "Ya Sin", "As-Saffat", "Sad", "Az-Zumar", "Ghafir", "Fussilat",
-  "Ash-Shura", "Az-Zukhruf", "Ad-Dukhan", "Al-Jathiyah", "Al-Ahqaf", "Muhammad", "Al-Fath",
-  "Al-Hujurat", "Qaf", "Adh-Dhariyat", "At-Tur", "An-Najm", "Al-Qamar", "Ar-Rahman", "Al-Waqi’ah",
-  "Al-Hadid", "Al-Mujadilah", "Al-Hashr", "Al-Mumtahanah", "As-Saff", "Al-Jumu’ah", "Al-Munafiqun",
-  "At-Taghabun", "At-Talaq", "At-Tahrim", "Al-Mulk", "Al-Qalam", "Al-Haqqah", "Al-Ma’arij",
-  "Nuh", "Al-Jinn", "Al-Muzzammil", "Al-Muddathir", "Al-Qiyamah", "Al-Insan", "Al-Mursalat",
-  "An-Naba’", "An-Nazi’at", "Abasa", "At-Takwir", "Al-Infitar", "Al-Mutaffifin", "Al-Inshiqaq",
-  "Al-Buruj", "At-Tariq", "Al-A’la", "Al-Ghashiyah", "Al-Fajr", "Al-Balad", "Ash-Shams", "Al-Layl",
-  "Ad-Duhaa", "Ash-Sharh", "At-Tin", "Al-‘Alaq", "Al-Qadr", "Al-Bayyinah", "Az-Zalzalah",
-  "Al-‘Adiyat", "Al-Qari’ah", "At-Takathur", "Al-‘Asr", "Al-Humazah", "Al-Fil", "Quraysh",
-  "Al-Ma’un", "Al-Kawthar", "Al-Kafirun", "An-Nasr", "Al-Masad", "Al-Ikhlas", "Al-Falaq", "An-Nas"
-];
+const surahSelect = document.getElementById('surahSelect');
+const reciterSelect = document.getElementById('reciterSelect');
+const statusEl = document.getElementById('status');
+const mushafEl = document.getElementById('mushaf');
+const ayahContainer = document.getElementById('ayahContainer');
+const surahName = document.getElementById('surahName');
+const surahMeta = document.getElementById('surahMeta');
+const playSurahBtn = document.getElementById('playSurahBtn');
+const stopBtn = document.getElementById('stopBtn');
 
 let currentAudio = null;
 let audioQueue = [];
 let isPlayingQueue = false;
 
-for (let i = 1; i <= 114; i++) {
+const surahNames = [
+  "Al-Faatiha", "Al-Baqarah", "Aali Imran", "An-Nisaa’", "Al-Maaidah",
+  "Al-An’aam", "Al-A’raaf", "Al-Anfaal", "At-Tawbah", "Yunus",
+  "Hud", "Yusuf", "Ar-Ra’d", "Ibrahim", "Al-Hijr",
+  "An-Nahl", "Al-Israa’", "Al-Kahf", "Maryam", "Taa-Haa",
+  "Al-Anbiyaa’", "Al-Hajj", "Al-Mu’minoon", "An-Noor", "Al-Furqaan",
+  "Ash-Shu’araa’", "An-Naml", "Al-Qasas", "Al-Ankabut", "Ar-Rum",
+  "Luqman", "As-Sajdah", "Al-Ahzaab", "Saba’", "Faatir",
+  "Yaseen", "As-Saaffaat", "Saad", "Az-Zumar", "Ghaafir",
+  "Fussilat", "Ash-Shura", "Az-Zukhruf", "Ad-Dukhaan", "Al-Jaathiyah",
+  "Al-Ahqaaf", "Muhammad", "Al-Fath", "Al-Hujuraat", "Qaaf",
+  "Adh-Dhaariyaat", "At-Tur", "An-Najm", "Al-Qamar", "Ar-Rahmaan",
+  "Al-Waaqi’ah", "Al-Hadeed", "Al-Mujaadilah", "Al-Hashr", "Al-Mumtahanah",
+  "As-Saff", "Al-Jumu’ah", "Al-Munaafiqoon", "At-Taghaabun", "At-Talaaq",
+  "At-Tahreem", "Al-Mulk", "Al-Qalam", "Al-Haaqqah", "Al-Ma’aarij",
+  "Nooh", "Al-Jinn", "Al-Muzzammil", "Al-Muddaththir", "Al-Qiyaamah",
+  "Al-Insaan", "Al-Mursalaat", "An-Naba’", "An-Naazi’aat", "Abasa",
+  "At-Takweer", "Al-Infitar", "Al-Mutaffifeen", "Al-Inshiqaaq", "Al-Burooj",
+  "At-Taariq", "Al-A’laa", "Al-Ghaashiyah", "Al-Fajr", "Al-Balad",
+  "Ash-Shams", "Al-Lail", "Adh-Dhuhaa", "Ash-Sharh", "At-Tiin",
+  "Al-‘Alaq", "Al-Qadr", "Al-Bayyinah", "Az-Zalzalah", "Al-‘Aadiyaat",
+  "Al-Qaari’ah", "At-Takaathur", "Al-‘Asr", "Al-Humazah", "Al-Feel",
+  "Quraish", "Al-Maa’oon", "Al-Kawthar", "Al-Kaafiroon", "An-Nasr",
+  "Al-Masad", "Al-Ikhlaas", "Al-Falaq", "An-Naas"
+];
+
+for(let i=1;i<=114;i++){
   const o = document.createElement('option');
   o.value = i;
-  o.textContent = `${i}. Surah ${surahNames[i - 1]}`;
+  o.textContent = `${i}. Surah ${surahNames[i-1]}`;
   surahSelect.appendChild(o);
 }
 
@@ -199,29 +217,7 @@ async function loadSurah(surahNum){
     surahName.textContent = `Surah ${surahNum}`;
     surahMeta.textContent = `Surah nombor ${surahNum}`;
   }
-// Paparkan setiap ayat dalam kotak
-if (arabicJson && arabicJson.data && arabicJson.data.ayahs) {
-  arabicJson.data.ayahs.forEach((ayah, index) => {
-    const box = document.createElement('div');
-    box.className = 'ayah-box';
-    box.innerHTML = `
-      <div class="ayah-number">${ayah.numberInSurah}</div>
-      <div class="ayah-text" dir="rtl">${ayah.text}</div>
-      <div class="ayah-translation">${
-        transJson && transJson.data && transJson.data.ayahs
-          ? transJson.data.ayahs[index].text
-          : ''
-      }</div>
-      <button class="play-ayah" data-audio="${ayah.audio}">▶ Ayat</button>
-    `;
-    ayahContainer.appendChild(box);
-  });
 
-  mushafEl.style.display = 'block';
-  statusEl.textContent = '';
-} else {
-  statusEl.textContent = 'Gagal memuat ayat.';
-}
   // fetch audio per-ayah from selected reciter (try alquran.cloud edition)
   const reciter = reciterSelect.value || 'ar.alafasy';
   const audioJson = await tryFetch(`https://api.alquran.cloud/v1/surah/${surahNum}/${reciter}`);
