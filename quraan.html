@@ -1,381 +1,190 @@
-<!-- save as index.html (single-file site) -->
 <!doctype html>
 <html lang="ms">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Al-Qur'an Mushaf — Juz 1 (Mushaf klasik + Tajwid warna)</title>
-<meta name="description" content="Mushaf gaya klasik — teks Al-Qur'an (Uthmani), tajwid warna, terjemahan Melayu. Pilih reciter untuk audio (AbdulBasit, Alafasy, Mishary, dll)." />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<!-- Arabic-friendly font (if not available device fallback used) -->
-<link href="https://fonts.googleapis.com/css2?family=Lateef&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --bg:#eef7ef;
-    --panel:#ffffff;
-    --accent:#2f6b46; /* hijau */
-    --muted:#617068;
-    --verse-bg:#ffffff;
-    --num-bg:#2f6b46;
-    --shadow: 0 6px 18px rgba(0,0,0,0.06);
-    --maxw:900px;
-    --arabic-font: "Lateef", "Noto Naskh Arabic", "Amiri", serif;
-  }
-  html,body{height:100%;margin:0;font-family:Inter, Arial, sans-serif;background:var(--bg);color:#1b2b22}
-  .wrap{max-width:var(--maxw);margin:14px auto;padding:16px}
-  header{background:var(--accent);color:#fff;padding:20px;border-radius:10px;text-align:center;box-shadow:var(--shadow)}
-  header h1{margin:0;font-size:20px;font-weight:700}
-  header p{margin:6px 0 0 0;opacity:.95}
-  .top-controls{display:flex;gap:8px;align-items:center;justify-content:space-between;margin-top:12px;flex-wrap:wrap}
-  .panel{background:var(--panel);border-radius:12px;padding:14px;margin-top:14px;box-shadow:var(--shadow)}
-  .surah-head{display:flex;justify-content:space-between;align-items:center;gap:12px}
-  .surah-title{font-weight:700;color:var(--accent)}
-  .meta{color:var(--muted);font-size:13px}
-  select, button{padding:8px 10px;border-radius:8px;border:1px solid #d6e6db;font-size:14px;background:#fff}
-  button.primary{background:var(--accent);color:#fff;border:0}
-  .mushaf{margin-top:14px;padding:18px;background:linear-gradient(180deg,#fff,#fbfff9);border-radius:12px;border:1px solid rgba(0,0,0,0.03)}
-  .ayah-block{background:var(--verse-bg);border-radius:8px;padding:18px;margin:14px 0;position:relative;border:1px solid #e6efe6}
-  .arabic{font-family:var(--arabic-font);direction:rtl;text-align:right;font-size:36px;line-height:1.6;letter-spacing:1px;color:#111}
-  .verse-number{position:absolute;left:18px;top:18px;width:36px;height:36px;border-radius:50%;background:var(--num-bg);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700}
-  .translation{margin-top:14px;color:#333;background:transparent;padding:12px;border-radius:8px;font-size:16px;line-height:1.6}
-  .tajwid-legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
-  .legend-item{background:#fff;padding:8px;border-radius:8px;border:1px solid #e6efe6;font-size:13px}
-  /* Tajwid colour classes (standard-ish) */
-  .tj-madd{color:#008000}         /* hijau */
-  .tj-idgham{color:#ff6600}       /* oren */
-  .tj-ikhfa{color:#990099}        /* ungu */
-  .tj-qalqalah{color:#0000cc}     /* biru */
-  .tj-ghunnah{color:#ff0000}      /* merah */
-  .tj-iqlab{color:#ff9900}        /* kuning/orange */
-  .tj-idhar{color:#0099cc}        /* biru muda */
-  /* player controls */
-  .audio-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:12px}
-  .small{font-size:13px;color:var(--muted)}
-  footer{margin-top:18px;padding:12px;border-radius:10px;background:#f6fff6;color:var(--muted);font-size:13px}
-  @media(max-width:520px){
-    .arabic{font-size:28px}
-    .verse-number{left:12px;top:12px;width:30px;height:30px}
-  }
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Al-Qur'an - 114 Surah (Template)</title>
+  <style>
+    :root{
+      --bg:#f7f7f7; --card:#fff; --accent:#0b5; --muted:#666;
+      --arabic-font: "Scheherazade", "Amiri", serif;
+    }
+    body{margin:0;font-family:system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background:var(--bg); color:#111;}
+    header{background:#073642;color:white;padding:1rem 1.25rem;display:flex;align-items:center;gap:1rem;}
+    header h1{font-size:1.125rem;margin:0}
+    main{max-width:1100px;margin:1.25rem auto;padding:0 1rem;}
+    .controls{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem;}
+    .card{background:var(--card);padding:1rem;border-radius:8px;box-shadow:0 1px 4px rgba(10,10,10,.06);margin-bottom:1rem;}
+    .surah{display:grid;grid-template-columns: 1fr 320px;gap:1rem;}
+    @media (max-width:900px){ .surah{grid-template-columns:1fr} }
+    .arabic{font-family:var(--arabic-font);font-size:28px;direction:rtl;text-align:right;padding:1rem 1rem 0 1rem;line-height:1.9}
+    .verse{margin-bottom:.6rem;padding:0 .25rem}
+    .meta{font-size:.9rem;color:var(--muted);margin-bottom:.5rem}
+    .translation{padding:0.5rem 0.75rem;border-left:3px solid #eee;}
+    nav.surah-list{max-height:60vh;overflow:auto;padding:0.5rem;}
+    nav.surah-list button{display:block;width:100%;text-align:left;padding:.35rem .5rem;border-radius:6px;border:0;background:transparent;}
+    nav.surah-list button:hover{background:#f0f6f5}
+    .juz-nav{display:flex;flex-wrap:wrap;gap:.25rem;}
+    .small{font-size:.9rem;color:var(--muted)}
+    .search{flex:1}
+  </style>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <h1>المصحف — Al-Qur'an (Juz 1)</h1>
-      <p>Gaya mushaf klasik • Tajwid berwarna • Terjemahan Melayu • Audio reciter boleh dipilih</p>
-    </header>
+  <header>
+    <h1>Al-Qur’ān — Template (114 Surah)</h1>
+    <div class="small">Muatkan terjemahan Melayu anda sebagai JSON / sumber lain</div>
+  </header>
 
-    <div class="top-controls">
-      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-        <label class="small">Pilih Surah</label>
-        <select id="surahSelect" title="Pilih surah"></select>
-
-        <label class="small" style="margin-left:10px">Reciter</label>
-        <select id="reciterSelect" title="Pilih reciter">
-          <option value="ar.alafasy">Alafasy</option>
-          <option value="ar.abdulbasitmurattal">Abdul Basit</option>
-          <option value="ar.mishary">Mishary</option>
-          <option value="ar.husary">Husary</option>
-          <option value="ar.sayid">Sayid (jika tersedia)</option>
-        </select>
+  <main>
+    <div class="controls card">
+      <div style="display:flex;gap:.5rem;align-items:center;">
+        <input id="searchInput" class="search" placeholder="Cari perkataan/ayat (contoh: rahmat)" />
+        <button id="btnLoadSample">Muat Contoh Terjemahan (Al-Fātiḥah)</button>
+        <button id="btnLoadJSON">Muat dari translations/malay.json</button>
       </div>
-
-      <div style="display:flex;gap:8px;align-items:center">
-        <button id="playSurahBtn" class="primary">▶ Main Surah</button>
-        <button id="stopBtn">■ Henti</button>
+      <div class="small" style="margin-top:.5rem">
+        Nota: letakkan fail <code>translations/malay.json</code> di folder yang sama atau sambungkan ke API. Struktur contoh ada di bawah.
       </div>
     </div>
 
-    <div id="status" class="panel small" style="margin-top:12px">Memuatkan...</div>
+    <div class="card surah" id="container">
+      <section>
+        <!-- Tempat kandungan Surah -->
+        <div id="surahContent">
+          <!-- Contoh: Surah Al-Fatiha (arab public domain) -->
+          <div class="meta"><strong>Surah 1 — Al-Fātiḥah</strong> • Makkiyah • 7 ayat</div>
+          <div class="arabic" id="arabic-1">
+            <div class="verse" data-verse="1">بِسْمِ اللَّهِ الرَّحْمَـٰنِ الرَّحِيمِ</div>
+            <div class="verse" data-verse="2">الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ</div>
+            <div class="verse" data-verse="3">الرَّحْمَـٰنِ الرَّحِيمِ</div>
+            <div class="verse" data-verse="4">مَالِكِ يَوْمِ الدِّينِ</div>
+            <div class="verse" data-verse="5">إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ</div>
+            <div class="verse" data-verse="6">اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ</div>
+            <div class="verse" data-verse="7">صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ</div>
+          </div>
 
-    <div id="mushaf" class="mushaf panel" style="display:none">
-      <div class="surah-head">
-        <div>
-          <div class="surah-title" id="surahName">—</div>
-          <div class="meta" id="surahMeta"></div>
+          <div id="translation-1" class="translation small">
+            <!-- Translation will be inserted here by JS -->
+            <em>Terjemahan belum dimuat. Tekan butang "Muat Contoh Terjemahan" atau muatkan JSON.</em>
+          </div>
         </div>
-        <div class="small">Juz berpaut kepada tiap surah (jika berkaitan)</div>
-      </div>
+      </section>
 
-      <div id="ayahContainer" style="margin-top:12px"></div>
+      <aside>
+        <nav class="card surah-list" id="surahList">
+          <!-- Senarai ringkas surah (boleh diisi generik) -->
+          <!-- Untuk kelajuan demo saya masukkan 10 pertama sahaja; butang JS boleh generate 114 -->
+        </nav>
 
-      <div class="panel" style="margin-top:12px">
-        <div class="tajwid-legend">
-          <div class="legend-item"><span class="tj-madd">Hijau</span> — Mad (panjangkan)</div>
-          <div class="legend-item"><span class="tj-idgham">Oren</span> — Idgham</div>
-          <div class="legend-item"><span class="tj-ikhfa">Ungu</span> — Ikhfa'</div>
-          <div class="legend-item"><span class="tj-qalqalah">Biru</span> — Qalqalah</div>
-          <div class="legend-item"><span class="tj-ghunnah">Merah</span> — Ghunnah</div>
+        <div class="card" style="margin-top:1rem">
+          <div class="small"><strong>Navigasi Juz</strong></div>
+          <div class="juz-nav" id="juzNav"></div>
         </div>
-      </div>
+      </aside>
     </div>
 
-    <footer>
-      <div>Nota: Sistem cuba muat data Arab & terjemahan dari API awam (alquran.cloud & lain). Jika terjemahan Melayu tidak dipaparkan, cuba pilih surah lain atau pastikan sambungan internet. Audio bergantung pada reciter & data API.</div>
-    </footer>
-  </div>
+  </main>
 
-<script>
-/*
-  Single-file "mushaf" viewer:
-  - Isi dropdown surah 1..114
-  - Ambil data Arabic & terjemahan dari alquran.cloud atau fallback
-  - Audio: gunakan endpoint alquran.cloud per-surah dengan edition reciter (e.g. ar.alafasy)
-  - Paparkan setiap ayah dalam kotak (nombor ayat di bulatan hijau)
-  - Tajwid: many APIs may include markup or tajwid classes; this script will insert Arabic HTML if tags present;
-    otherwise plain text. Tajwid colour mapping CSS classes provided above for future markup.
-*/
+  <script>
+    // --- Struktur JSON contoh yang diharapkan (translations/malay.json) ---
+    // {
+    //   "1": { "verses": { "1": "Dengan nama Allah Yang Maha Pengasih, lagi Maha Penyayang.", "2": "...", ... } },
+    //   "2": { "verses": { "1": "...", ... } },
+    //   ...
+    // }
 
-const surahSelect = document.getElementById('surahSelect');
-const reciterSelect = document.getElementById('reciterSelect');
-const statusEl = document.getElementById('status');
-const mushafEl = document.getElementById('mushaf');
-const ayahContainer = document.getElementById('ayahContainer');
-const surahName = document.getElementById('surahName');
-const surahMeta = document.getElementById('surahMeta');
-const playSurahBtn = document.getElementById('playSurahBtn');
-const stopBtn = document.getElementById('stopBtn');
-
-let currentAudio = null;
-let audioQueue = [];
-let isPlayingQueue = false;
-
-const surahNames = [
-  "Al-Faatiha", "Al-Baqarah", "Aali Imran", "An-Nisaa’", "Al-Maaidah",
-  "Al-An’aam", "Al-A’raaf", "Al-Anfaal", "At-Tawbah", "Yunus",
-  "Hud", "Yusuf", "Ar-Ra’d", "Ibrahim", "Al-Hijr",
-  "An-Nahl", "Al-Israa’", "Al-Kahf", "Maryam", "Taa-Haa",
-  "Al-Anbiyaa’", "Al-Hajj", "Al-Mu’minoon", "An-Noor", "Al-Furqaan",
-  "Ash-Shu’araa’", "An-Naml", "Al-Qasas", "Al-Ankabut", "Ar-Rum",
-  "Luqman", "As-Sajdah", "Al-Ahzaab", "Saba’", "Faatir",
-  "Yaseen", "As-Saaffaat", "Saad", "Az-Zumar", "Ghaafir",
-  "Fussilat", "Ash-Shura", "Az-Zukhruf", "Ad-Dukhaan", "Al-Jaathiyah",
-  "Al-Ahqaaf", "Muhammad", "Al-Fath", "Al-Hujuraat", "Qaaf",
-  "Adh-Dhaariyaat", "At-Tur", "An-Najm", "Al-Qamar", "Ar-Rahmaan",
-  "Al-Waaqi’ah", "Al-Hadeed", "Al-Mujaadilah", "Al-Hashr", "Al-Mumtahanah",
-  "As-Saff", "Al-Jumu’ah", "Al-Munaafiqoon", "At-Taghaabun", "At-Talaaq",
-  "At-Tahreem", "Al-Mulk", "Al-Qalam", "Al-Haaqqah", "Al-Ma’aarij",
-  "Nooh", "Al-Jinn", "Al-Muzzammil", "Al-Muddaththir", "Al-Qiyaamah",
-  "Al-Insaan", "Al-Mursalaat", "An-Naba’", "An-Naazi’aat", "Abasa",
-  "At-Takweer", "Al-Infitar", "Al-Mutaffifeen", "Al-Inshiqaaq", "Al-Burooj",
-  "At-Taariq", "Al-A’laa", "Al-Ghaashiyah", "Al-Fajr", "Al-Balad",
-  "Ash-Shams", "Al-Lail", "Adh-Dhuhaa", "Ash-Sharh", "At-Tiin",
-  "Al-‘Alaq", "Al-Qadr", "Al-Bayyinah", "Az-Zalzalah", "Al-‘Aadiyaat",
-  "Al-Qaari’ah", "At-Takaathur", "Al-‘Asr", "Al-Humazah", "Al-Feel",
-  "Quraish", "Al-Maa’oon", "Al-Kawthar", "Al-Kaafiroon", "An-Nasr",
-  "Al-Masad", "Al-Ikhlaas", "Al-Falaq", "An-Naas"
-];
-
-for(let i=1;i<=114;i++){
-  const o = document.createElement('option');
-  o.value = i;
-  o.textContent = `${i}. Surah ${surahNames[i-1]}`;
-  surahSelect.appendChild(o);
-}
-
-// helper: try to fetch JSON safely
-async function tryFetch(url){
-  try{
-    const res = await fetch(url);
-    if(!res.ok) return null;
-    return await res.json();
-  }catch(e){
-    return null;
-  }
-}
-
-async function loadSurah(surahNum){
-  statusEl.textContent = 'Memuat surah...';
-  mushafEl.style.display = 'none';
-  ayahContainer.innerHTML = '';
-  currentAudio = null;
-  audioQueue = [];
-  isPlayingQueue = false;
-
-  // try primary Arabic + reciter audio from alquran.cloud
-  const arabicUrl = `https://api.alquran.cloud/v1/surah/${surahNum}/quran-uthmani`; // Arabic Uthmani edition
-  const translationUrlCandidates = [
-    `https://api.alquran.cloud/v1/surah/${surahNum}/ms.syahadah`, // try Malay editions
-    `https://api.alquran.cloud/v1/surah/${surahNum}/ms.bahasa`, 
-    `https://api.alquran.cloud/v1/surah/${surahNum}/en.translator` // fallback (not Malay)
-  ];
-
-  const arabicJson = await tryFetch(arabicUrl);
-
-  // get translation (first that works)
-  let transJson = null;
-  for(const url of translationUrlCandidates){
-    const j = await tryFetch(url);
-    if(j && j.data && j.data.ayahs) { transJson = j; break; }
-  }
-
-  // surah meta
-  if(arabicJson && arabicJson.data){
-    surahName.textContent = `${arabicJson.data.englishName} — ${arabicJson.data.name}`;
-    surahMeta.textContent = `Surah ${arabicJson.data.englishName} • ${arabicJson.data.revelationType} • ${arabicJson.data.numberOfAyahs} ayat`;
-  } else {
-    surahName.textContent = `Surah ${surahNum}`;
-    surahMeta.textContent = `Surah nombor ${surahNum}`;
-  }
-
-  // fetch audio per-ayah from selected reciter (try alquran.cloud edition)
-  const reciter = reciterSelect.value || 'ar.alafasy';
-  const audioJson = await tryFetch(`https://api.alquran.cloud/v1/surah/${surahNum}/${reciter}`);
-  // audioJson.data.ayahs[n].audio may exist in some editions. We'll collect ayah audio URLs if present.
-  const ayahAudioUrls = [];
-  if(audioJson && audioJson.data && audioJson.data.ayahs){
-    audioJson.data.ayahs.forEach(a => {
-      // try common fields
-      if(a.audio) ayahAudioUrls.push(a.audio);
-      else if(a.audioSecondary && a.audioSecondary.length) ayahAudioUrls.push(a.audioSecondary[0]);
-      else ayahAudioUrls.push(null);
-    });
-  }
-
-  // decide source of Arabic text: prefer arabicJson, else audioJson.data
-  const ayahs = (arabicJson && arabicJson.data && arabicJson.data.ayahs) ? arabicJson.data.ayahs : (audioJson && audioJson.data && audioJson.data.ayahs) ? audioJson.data.ayahs : null;
-  const translations = (transJson && transJson.data && transJson.data.ayahs) ? transJson.data.ayahs : null;
-
-  if(!ayahs){
-    statusEl.textContent = '⚠️ Gagal muat teks Al-Quran dari API. Sila cuba semula.';
-    return;
-  }
-
-  // Build UI
-  statusEl.textContent = `Memaparkan Surah ${surahNum} — ${ayahs.length} ayat`;
-  mushafEl.style.display = 'block';
-
-  ayahs.forEach((ayahObj, idx) => {
-    const ayahDiv = document.createElement('div');
-    ayahDiv.className = 'ayah-block';
-
-    // Arabic text: some APIs return .text or .textUthmani or .arab
-    let arabicText = ayahObj.text || ayahObj.textUthmani || ayahObj.ar || '';
-    // If Arabic contains HTML tags (span classes for tajwid), use innerHTML, else textContent.
-    const arabicEl = document.createElement('div');
-    arabicEl.className = 'arabic';
-    if(/<[^>]+>/.test(arabicText)){
-      arabicEl.innerHTML = arabicText;
-    } else {
-      // some Arabic strings may have isolated characters; set textContent (ensures correct escaping)
-      arabicEl.textContent = arabicText;
+    // Buat senarai surah (1..114)
+    const surahListEl = document.getElementById('surahList');
+    for(let i=1;i<=114;i++){
+      const btn = document.createElement('button');
+      btn.textContent = `Surah ${i}`;
+      btn.onclick = ()=>loadSurah(i);
+      surahListEl.appendChild(btn);
     }
 
-    // verse number bubble
-    const num = document.createElement('div');
-    num.className = 'verse-number';
-    num.textContent = ayahObj.numberInSurah || (idx+1);
-
-    // translation
-    const transEl = document.createElement('div');
-    transEl.className = 'translation small';
-    let trText = '';
-    if(translations && translations[idx]){
-      // some translations have .text or .translation
-      trText = translations[idx].text || translations[idx].translation || translations[idx].translation_text || '';
-    }
-    if(!trText){
-      trText = ''; // optional: show "Terjemahan belum tersedia"
-    }
-    transEl.textContent = trText;
-
-    // play ayah button (if audio URL present)
-    const ayahAudioUrl = (ayahAudioUrls && ayahAudioUrls.length>idx) ? ayahAudioUrls[idx] : null;
-    if(ayahAudioUrl){
-      const playBtn = document.createElement('button');
-      playBtn.textContent = '▶ Ayat';
-      playBtn.style.marginTop = '12px';
-      playBtn.onclick = ()=> {
-        if(currentAudio){ currentAudio.pause(); currentAudio=null; }
-        currentAudio = new Audio(ayahAudioUrl);
-        currentAudio.play().catch(e=>alert('Audio play error: '+e.message));
-      };
-      // attach to translation container
-      transEl.appendChild(document.createElement('br'));
-      transEl.appendChild(playBtn);
+    // Buat navigasi Juz (1..30)
+    const juzNav = document.getElementById('juzNav');
+    for(let j=1;j<=30;j++){
+      const b = document.createElement('button');
+      b.textContent = `Juz ${j}`;
+      b.onclick = ()=>alert(`Navigasi Juz ${j} — anda boleh sambungkan ke data terperinci juzu'`);
+      juzNav.appendChild(b);
     }
 
-    ayahDiv.appendChild(num);
-    ayahDiv.appendChild(arabicEl);
-    if(trText) ayahDiv.appendChild(transEl);
-    ayahContainer.appendChild(ayahDiv);
-  });
-
-  // prepare audio queue (whole surah) from ayahAudioUrls if have any
-  audioQueue = ayahAudioUrls && ayahAudioUrls.some(u => u) ? ayahAudioUrls : [];
-
-  // stop any playing audio
-  stopPlayback();
-}
-
-// Playback queue for whole surah
-function stopPlayback(){
-  if(currentAudio){ currentAudio.pause(); currentAudio=null; }
-  audioQueue = audioQueue.map(u=>u); // keep
-  isPlayingQueue = false;
-}
-async function playQueueFrom(index=0){
-  if(!audioQueue || audioQueue.length===0) { alert('Audio reciter tidak tersedia untuk surah ini.'); return; }
-  if(index >= audioQueue.length) return;
-  isPlayingQueue = true;
-  for(let i=index;i<audioQueue.length;i++){
-    const url = audioQueue[i];
-    if(!isPlayingQueue) break;
-    if(!url) continue;
-    try{
-      await playOne(url);
-    }catch(e){
-      console.warn('play err',e);
-    }
-  }
-  isPlayingQueue = false;
-}
-function playOne(url){
-  return new Promise((resolve,reject)=>{
-    try{
-      if(currentAudio){ currentAudio.pause(); currentAudio=null; }
-      currentAudio = new Audio(url);
-      currentAudio.onended = ()=> resolve();
-      currentAudio.onerror = (e)=> { resolve(); }; // skip on error
-      currentAudio.play().catch(e=> { console.warn('play fail',e); resolve(); });
-    }catch(e){
-      resolve();
-    }
-  });
-}
-
-playSurahBtn.addEventListener('click', ()=> {
-  if(audioQueue && audioQueue.length>0){
-    playQueueFrom(0);
-  } else {
-    // as fallback: try to fetch alquran.cloud reciter edition per-surah and queue again
-    const surahNum = parseInt(surahSelect.value || 1);
-    const reciter = reciterSelect.value || 'ar.alafasy';
-    statusEl.textContent = 'Mencari audio reciter...';
-    tryFetch(`https://api.alquran.cloud/v1/surah/${surahNum}/${reciter}`).then(j=>{
-      if(j && j.data && j.data.ayahs){
-        audioQueue = j.data.ayahs.map(a => a.audio || (a.audioSecondary && a.audioSecondary[0]) || null);
-        if(audioQueue.some(u=>u)){ playQueueFrom(0); statusEl.textContent='Memainkan audio...'; return; }
+    // Fungsi muat surah (demo ringkas: hanya tukar tajuk & tunjukkan Al-Fatiha jika surah=1)
+    function loadSurah(n){
+      const meta = document.querySelector('#surahContent .meta');
+      meta.innerHTML = `<strong>Surah ${n}</strong> • (Data penuh perlu disediakan)`;
+      // Jika surah 1, tunjukkan yang sedia ada; kalau bukan, kosongkan kawasan arabic/translation
+      if(n===1){
+        document.getElementById('arabic-1').style.display='block';
+        document.getElementById('translation-1').style.display='block';
+      } else {
+        document.getElementById('arabic-1').style.display='none';
+        document.getElementById('translation-1').innerHTML = `<em>Arab & terjemahan untuk Surah ${n} belum dimuat.</em>`;
       }
-      alert('Audio untuk reciter ini tidak ditemui untuk surah ini.');
-      statusEl.textContent = 'Audio tidak ditemui';
+    }
+
+    // Contoh: muat contoh terjemahan untuk Surah 1 (hanya contoh ringkas)
+    document.getElementById('btnLoadSample').addEventListener('click', ()=>{
+      const tEl = document.getElementById('translation-1');
+      // *Nota penting:* saya tidak memasukkan terjemahan penuh terjemahan Bahasa Melayu berhakcipta di sini.
+      tEl.innerHTML = `
+        <div><strong>Terjemahan (contoh ringkas / demo):</strong></div>
+        <div style="margin-top:.4rem">
+          1. (Bismillāh) Dengan nama Allah Yang Maha Pemurah lagi Maha Penyayang.<br>
+          2. Segala puji bagi Allah, Tuhan seru sekalian alam.<br>
+          3. (Dia) Maha Pemurah lagi Maha Penyayang.<br>
+          4. Pemilik hari pembalasan.<br>
+          5. Hanya kepada Engkaulah kami menyembah dan hanya kepada Engkaulah kami mohon pertolongan.<br>
+          6. Tunjukilah kami jalan yang lurus,<br>
+          7. (iaitu) jalan orang-orang yang Engkau telah beri nikmat kepada mereka — bukan jalan mereka yang dimurkai dan bukan pula jalan mereka yang sesat.
+        </div>
+      `;
     });
-  }
-});
 
-stopBtn.addEventListener('click', ()=> { stopPlayback(); statusEl.textContent='Dihenti'; });
+    // Fungsi muat dari JSON tempatan translations/malay.json (perlu ada pada server)
+    document.getElementById('btnLoadJSON').addEventListener('click', async ()=>{
+      try{
+        const resp = await fetch('translations/malay.json');
+        if(!resp.ok) throw new Error('Fail translations/malay.json tidak ditemui (404). Pastikan fail ada pada server yang sama.');
+        const data = await resp.json();
+        // contoh muat surah 1 jika ada
+        if(data["1"] && data["1"].verses){
+          const verses = data["1"].verses;
+          let html = '<div><strong>Terjemahan (dimuat dari translations/malay.json):</strong></div><div style="margin-top:.4rem">';
+          Object.keys(verses).sort((a,b)=>Number(a)-Number(b)).forEach(v => {
+            html += `<div style="margin-bottom:.4rem"><strong>${v}.</strong> ${escapeHtml(verses[v])}</div>`;
+          });
+          html += '</div>';
+          document.getElementById('translation-1').innerHTML = html;
+        } else {
+          document.getElementById('translation-1').innerHTML = '<em>Struktur JSON tidak mengandungi Surah 1.</em>';
+        }
+        alert('Terjemahan dimuat. Untuk paparan penuh, server perlu mengandungi keseluruhan terjemahan (114 surah).');
+      }catch(err){
+        alert('Ralat memuatkan JSON: ' + err.message);
+      }
+    });
 
-surahSelect.addEventListener('change', (e)=> loadSurah(e.target.value));
-reciterSelect.addEventListener('change', (e)=> {
-  // when reciter change, reload audio & page but keep same surah
-  const s = surahSelect.value || 1;
-  loadSurah(s);
-});
+    // carian ringkas (mencari dalam kawasan terjemahan yang dimuat)
+    document.getElementById('searchInput').addEventListener('input', (e)=>{
+      const q = e.target.value.trim().toLowerCase();
+      if(!q){ /* reset highlight jika perlu */ return; }
+      // demo: cari dalam #translation-1
+      const t = document.getElementById('translation-1').innerText.toLowerCase();
+      if(t.includes(q)){
+        alert(`Teks dijumpai dalam terjemahan yang dimuat (contoh: Surah 1).`);
+      } else {
+        // not found
+      }
+    });
 
-// initial
-surahSelect.value = 1;
-loadSurah(1);
+    // small helper
+    function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
-</script>
+    // muat awal: tunjuk Surah 1
+    loadSurah(1);
+  </script>
 </body>
 </html>
